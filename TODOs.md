@@ -1,0 +1,11 @@
+- [ ] CRUD by session id
+- [ ] Enter creates a new item
+- [ ] Drag and order list
+- [ ] fix new note save
+- [ ] Integrate firebase
+- [ ] Add login or some sort of auth?
+- [ ] Export as markdown?
+- [ ] Host
+- [ ] Fix responsive
+- [ ] Make icon select?
+- [ ] Add navigation
