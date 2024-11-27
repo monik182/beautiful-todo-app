@@ -3,16 +3,12 @@ import { Checkbox } from './ui/checkbox'
 import { useState } from 'react'
 import { Button } from './ui/button'
 import { SlBasket, SlPlus } from "react-icons/sl"
+import { ListItem, ListProps } from '../types'
 
-interface ListItem {
-  id: string
-  content: string
-  checked: boolean
-}
 
-export function List() {
-  const [name, setName] = useState('New List')
-  const [checkboxes, setCheckboxes] = useState<ListItem[]>([])
+export function List({ id, title = 'New List', items }: ListProps) {
+  const [name, setName] = useState(title)
+  const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
 
   const addCheckbox = () => {
     setCheckboxes([

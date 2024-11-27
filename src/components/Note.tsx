@@ -1,9 +1,11 @@
 import { Card, Editable, Flex, Textarea } from '@chakra-ui/react'
 import { useState } from 'react'
 import { SlHeart } from 'react-icons/sl'
+import { NoteProps } from '../types'
 
-export function Note() {
-  const [name, setName] = useState('New Note')
+export function Note({ id, title = 'New Note', content}: NoteProps) {
+  const [name, setName] = useState(title)
+  const [text, setContent] = useState(content)
   return (
     <Card.Root>
       <Card.Header>
@@ -20,7 +22,7 @@ export function Note() {
         </Flex>
       </Card.Header>
       <Card.Body>
-        <Textarea variant="flushed" placeholder="Write your thoughts ❤️..." />
+        <Textarea variant="flushed" placeholder="Write your thoughts ❤️..." value={text} onChange={(e) => setContent(e.target.value) } />
       </Card.Body>
     </Card.Root>
   )
