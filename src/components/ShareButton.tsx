@@ -15,7 +15,7 @@ export const ShareButton = ({ sessionId, type, resourceId }: ShareButtonProps) =
       return null
     }
 
-    currentUrl = currentUrl + `?sessionId=${sessionId}&type=${type}&id=${resourceId}`
+    currentUrl = currentUrl + `/${type}?sessionId=${sessionId}&id=${resourceId}`
 
     if (navigator.share) {
       navigator.share({
