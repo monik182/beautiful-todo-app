@@ -70,7 +70,7 @@ export function Layout() {
         <Tabs.Content value="list">
           <Flex gap="2rem" direction="column">
             <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-              {lists.map((props) => <List {...props} />)}
+              {lists.map((props) => <List sessionId={sessionId} {...props} />)}
             </SimpleGrid>
             <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
               <SlPlus /> New List
@@ -80,7 +80,7 @@ export function Layout() {
         <Tabs.Content value="notes">
           <Flex gap="2rem" direction="column">
             <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-              {notes.map((props) => <Note {...props} />)}
+              {notes.map((props) => <Note sessionId={sessionId} {...props} />)}
             </SimpleGrid>
             <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
               <SlPlus /> New Note

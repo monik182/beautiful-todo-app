@@ -1,12 +1,13 @@
-import { Card, Container, Editable, Flex, Float, IconButton } from '@chakra-ui/react'
+import { Card, Container, Editable, Flex } from '@chakra-ui/react'
 import { Checkbox } from './ui/checkbox'
 import { useState } from 'react'
 import { Button } from './ui/button'
-import { SlBasket, SlPlus, SlShareAlt } from "react-icons/sl"
-import { ListItem, ListProps } from '../types'
+import { SlBasket, SlPlus } from "react-icons/sl"
+import { ListItem, ListProps, PropsWithSessionId } from '../types'
+import { ShareButton } from './ShareButton'
 
 
-export function List({ id, title = 'New List', items }: ListProps) {
+export function List({ sessionId, id, title = 'New List', items }: PropsWithSessionId<ListProps>) {
   const [name, setName] = useState(title)
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
 
@@ -48,14 +49,7 @@ export function List({ id, title = 'New List', items }: ListProps) {
               <Editable.Input />
             </Editable.Root>
           </Flex>
-          <Float offset="5" >
-            <IconButton
-              aria-label="Call support"
-              variant="ghost"
-            >
-              <SlShareAlt />
-            </IconButton>
-          </Float>
+          <ShareButton sessionId={sessionId} resourceId={id} type="list" />
         </Card.Header>
         <Card.Body>
           {checkboxes.map((checkbox) => (

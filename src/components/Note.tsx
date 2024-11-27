@@ -1,9 +1,10 @@
-import { Card, Editable, Flex, Float, IconButton, Textarea } from '@chakra-ui/react'
+import { Card, Editable, Flex, Textarea } from '@chakra-ui/react'
 import { useState } from 'react'
-import { SlHeart, SlShareAlt } from 'react-icons/sl'
-import { NoteProps } from '../types'
+import { SlHeart } from 'react-icons/sl'
+import { NoteProps, PropsWithSessionId } from '../types'
+import { ShareButton } from '.'
 
-export function Note({ id, title = 'New Note', content}: NoteProps) {
+export function Note({ sessionId, id, title = 'New Note', content }: PropsWithSessionId<NoteProps>) {
   const [name, setName] = useState(title)
   const [text, setContent] = useState(content)
   return (
@@ -20,14 +21,7 @@ export function Note({ id, title = 'New Note', content}: NoteProps) {
             <Editable.Input />
           </Editable.Root>
         </Flex>
-        <Float offset="5" >
-          <IconButton
-            aria-label="Call support"
-            variant="ghost"
-          >
-            <SlShareAlt />
-          </IconButton>
-        </Float>
+        <ShareButton sessionId={sessionId} resourceId={id} type="note" />
       </Card.Header>
       <Card.Body>
         <Textarea variant="flushed" placeholder="Write your thoughts ❤️..." value={text} onChange={(e) => setContent(e.target.value) } />

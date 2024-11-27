@@ -15,3 +15,6 @@ export interface ListItem {
   content: string
   checked: boolean
 }
+
+export type PropsWithSessionId<T> = T & { sessionId: string }
+
