@@ -3,12 +3,18 @@ import { useSessionContext } from './SessionProvider'
 import { ColorModeButton } from './components/ui/color-mode'
 import { Note, List } from './components'
 import { SlList, SlNote, SlPlus } from 'react-icons/sl'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ListProps, NoteProps } from './types'
 import { Button } from './components/ui/button'
+import { useNavigate } from 'react-router-dom'
+import { useQueryParams } from './hooks/useQueryParams'
 
 export function Layout() {
   const { sessionId } = useSessionContext()
+  const navigate = useNavigate()
+  const params = useQueryParams()
+  const currentTab = params.get('tab') || 'list'
+  const [tab, setTab] = useState<string | null>("list")
   const [lists, setLists] = useState<ListProps[]>([])
   const [notes, setNotes] = useState<NoteProps[]>([])
 
@@ -19,6 +25,16 @@ export function Layout() {
   const addNewNote = () => {
     setNotes([...notes, { id: (notes.length + 1).toString(), title: 'New Note', content: '' }])
   }
+
+  const handleTabChange = (tab: string) => {
+    setTab(tab)
+    navigate(`?tab=${tab}`, { replace: true })
+  }
+
+  useEffect(() => {
+      navigate(`?tab=${currentTab}`, { replace: true })
+      setTab(currentTab)
+  }, [currentTab, navigate])
 
   if (!sessionId) {
     return (
@@ -40,7 +56,7 @@ export function Layout() {
         <ColorModeButton />
       </Flex>
 
-      <Tabs.Root defaultValue="list">
+      <Tabs.Root defaultValue="list" value={tab} onValueChange={(e) => handleTabChange(e.value)}>
         <Tabs.List>
           <Tabs.Trigger value="list">
             <SlList />

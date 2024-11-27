@@ -1,8 +1,8 @@
-import { Card, Container, Editable, Flex } from '@chakra-ui/react'
+import { Card, Container, Editable, Flex, Float, IconButton } from '@chakra-ui/react'
 import { Checkbox } from './ui/checkbox'
 import { useState } from 'react'
 import { Button } from './ui/button'
-import { SlBasket, SlPlus } from "react-icons/sl"
+import { SlBasket, SlPlus, SlShareAlt } from "react-icons/sl"
 import { ListItem, ListProps } from '../types'
 
 
@@ -48,6 +48,14 @@ export function List({ id, title = 'New List', items }: ListProps) {
               <Editable.Input />
             </Editable.Root>
           </Flex>
+          <Float offset="5" >
+            <IconButton
+              aria-label="Call support"
+              variant="ghost"
+            >
+              <SlShareAlt />
+            </IconButton>
+          </Float>
         </Card.Header>
         <Card.Body>
           {checkboxes.map((checkbox) => (
