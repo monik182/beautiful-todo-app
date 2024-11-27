@@ -7,22 +7,32 @@ import { useEffect, useState } from 'react';
 import { useQueryParams } from '../hooks/useQueryParams';
 import { ListProps, NoteProps } from '../types';
 import { List, Note } from '../components';
+import { useStorage } from '../storage';
 
 export function Home() {
   const { sessionId } = useSessionContext()
+  const storage = useStorage()
   const navigate = useNavigate()
   const params = useQueryParams()
   const currentTab = params.get('tab') || 'list'
   const [tab, setTab] = useState<string | null>("list")
   const [lists, setLists] = useState<ListProps[]>([])
   const [notes, setNotes] = useState<NoteProps[]>([])
+  function fetchNotes() {
+    storage.getNotes().then(setNotes)
+  }
 
   const addNewList = () => {
     setLists([...lists, { id: (lists.length + 1).toString(), title: 'New List', items: [] }])
   }
 
-  const addNewNote = () => {
-    setNotes([...notes, { id: (notes.length + 1).toString(), title: 'New Note', content: '' }])
+  const addNewNote = async () => {
+    const newNote = { id: (notes.length + 1).toString(), title: 'New Note', content: '' }
+    setNotes([...notes, newNote])
+    await storage.createNote({
+      ...newNote,
+      date: new Date().toISOString(),
+    });
   }
 
   const handleTabChange = (tab: string) => {
@@ -34,6 +44,14 @@ export function Home() {
     navigate(`?tab=${currentTab}`, { replace: true })
     setTab(currentTab)
   }, [currentTab, navigate])
+
+  useEffect(() => {
+    fetchNotes()
+  }, [sessionId])
+
+  useEffect(() => {
+    console.log('notes:', notes)
+  }, [notes])
   
   return (
     <Tabs.Root defaultValue="list" value={tab} onValueChange={(e) => handleTabChange(e.value)}>
@@ -50,7 +68,7 @@ export function Home() {
       <Tabs.Content value="list">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {lists.map((props) => <List sessionId={sessionId!} {...props} />)}
+            {lists.map((props) => <List key={props.id} sessionId={sessionId!} {...props} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
             <SlPlus /> New List
@@ -60,7 +78,7 @@ export function Home() {
       <Tabs.Content value="notes">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {notes.map((props) => <Note sessionId={sessionId!} {...props} />)}
+            {notes.map((props) => <Note key={props.id} sessionId={sessionId!} {...props} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
             <SlPlus /> New Note
