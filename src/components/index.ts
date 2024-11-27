@@ -1,2 +1,2 @@
 export * from './Note'
-export * from './ToDoList'
+export * from './List'

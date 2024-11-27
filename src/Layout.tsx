@@ -1,7 +1,7 @@
 import { Spinner, VStack, Text, Container, Tabs, Flex, Heading, Center } from '@chakra-ui/react'
 import { useSessionContext } from './SessionProvider'
 import { ColorModeButton } from './components/ui/color-mode'
-import { Note, ToDoList } from './components'
+import { Note, List } from './components'
 import { SlList, SlNote } from 'react-icons/sl'
 
 export function Layout() {
@@ -22,23 +22,23 @@ export function Layout() {
   return (
     <Container margin="1rem 2rem">
       <Flex justify="space-between">
-        <Heading size="2xl">My Notes and ToDos</Heading>
+        <Heading size="2xl">Notes and Lists</Heading>
         <ColorModeButton />
       </Flex>
 
-      <Tabs.Root defaultValue="todos">
+      <Tabs.Root defaultValue="list">
         <Tabs.List>
-          <Tabs.Trigger value="todos">
+          <Tabs.Trigger value="list">
             <SlList />
-            To Do List
+            List
           </Tabs.Trigger>
           <Tabs.Trigger value="notes">
             <SlNote />
             Notes
           </Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Content value="todos">
-          <ToDoList />
+        <Tabs.Content value="list">
+          <List />
         </Tabs.Content>
         <Tabs.Content value="notes">
           <Note />

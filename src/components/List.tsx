@@ -9,13 +9,9 @@ interface ListItem {
   content: string
   checked: boolean
 }
-interface List {
-  name: string
-  items: ListItem[]
-}
 
-export function ToDoList() {
-  const [name, setName] = useState('New To Do List')
+export function List() {
+  const [name, setName] = useState('New List')
   const [checkboxes, setCheckboxes] = useState<ListItem[]>([])
 
   const addCheckbox = () => {
