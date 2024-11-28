@@ -1,5 +1,4 @@
 - [ ] Fix responsive
-- [ ] Add navigation
 - [ ] Host
 - [ ] Drag and order list
 - [ ] Enter creates a new item
@@ -8,6 +7,7 @@
 - [ ] Add login or some sort of auth?
 - [ ] Make icon select?
 - [ ] Export as markdown/txt?
+- [x] Add navigation
 - [x] Add sync
 - [x] Integrate firebase
 - [x] fix new note save

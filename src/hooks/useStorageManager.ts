@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useStorage } from '../storage'
 import { ListProps, NoteProps } from '../types'
+import { toaster } from '../components/ui/toaster'
 
 export const useStorageManager = () => {
   const storage = useStorage()
@@ -32,6 +33,16 @@ export const useStorageManager = () => {
         setLoading(true)
         await storage.createNote(note)
         await fetchNotes()
+        toaster.create({
+          title: 'Note Created Successfully',
+          type: 'success',
+        })
+      } catch (error) {
+        console.error('Error creating note:', error)
+        toaster.create({
+          title: 'Error Creating Note',
+          type: 'error',
+        })
       } finally {
         setLoading(false)
       }
@@ -45,6 +56,12 @@ export const useStorageManager = () => {
         setLoading(true)
         await storage.updateNote(note)
         await fetchNotes()
+      } catch (error) {
+        console.error('Error updating note:', error)
+        toaster.create({
+          title: 'Error Updating Note',
+          type: 'error',
+        })
       } finally {
         setLoading(false)
       }
@@ -58,6 +75,16 @@ export const useStorageManager = () => {
         setLoading(true)
         await storage.deleteNote(id)
         await fetchNotes()
+        toaster.create({
+          title: 'Note Deleted Successfully',
+          type: 'success',
+        })
+      } catch (error) {
+        console.error('Error deleting note:', error)
+        toaster.create({
+          title: 'Error Deleting Note',
+          type: 'error',
+        })
       } finally {
         setLoading(false)
       }
@@ -71,6 +98,16 @@ export const useStorageManager = () => {
         setLoading(true)
         await storage.createList(list)
         await fetchLists()
+        toaster.create({
+          title: 'List Created Successfully',
+          type: 'success',
+        })
+      } catch (error) {
+        console.error('Error creating list:', error)
+        toaster.create({
+          title: 'Error Creating List',
+          type: 'error',
+        })
       } finally {
         setLoading(false)
       }
@@ -84,6 +121,12 @@ export const useStorageManager = () => {
         setLoading(true)
         await storage.updateList(list)
         await fetchLists()
+      } catch (error) {
+        console.error('Error updating list:', error)
+        toaster.create({
+          title: 'Error Updating List',
+          type: 'error',
+        })
       } finally {
         setLoading(false)
       }
@@ -97,6 +140,16 @@ export const useStorageManager = () => {
         setLoading(true)
         await storage.deleteList(id)
         await fetchLists()
+        toaster.create({
+          title: 'List Deleted Successfully',
+          type: 'success',
+        })
+      } catch (error) {
+        console.error('Error deleting list:', error)
+        toaster.create({
+          title: 'Error Deleting List',
+          type: 'error',
+        })
       } finally {
         setLoading(false)
       }
@@ -108,6 +161,16 @@ export const useStorageManager = () => {
     try {
       setLoading(true)
       await storage.sync?.()
+      toaster.create({
+        title: 'Synced Successfully',
+        type: 'success',
+      })
+    } catch (error) {
+      console.error('Error syncing:', error)
+      toaster.create({
+        title: 'Error Syncing',
+        type: 'error',
+      })
     } finally {
       setLoading(false)
     }
