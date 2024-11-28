@@ -4,36 +4,24 @@ import { SlList, SlNote, SlPlus } from 'react-icons/sl';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useQueryParams } from '../hooks/useQueryParams';
-import { ListProps, NoteProps } from '../types';
 import { List, Note } from '../components';
-import { useStorage } from '../storage';
 import { generateResourceId } from '../utils';
 import { useSessionContext } from '../SessionProvider';
-
+import { useStorageManager } from '../hooks/useStorageManager';
 export function Home() {
-  const { sessionId } = useSessionContext()
-  const storage = useStorage()
   const navigate = useNavigate()
   const params = useQueryParams()
+  const { sessionId } = useSessionContext()
+  const { notes, lists, sync, createNote, createList } = useStorageManager()
   const currentTab = params.get('tab') || 'list'
-  const [tab, setTab] = useState<string | null>("list")
-  const [lists, setLists] = useState<ListProps[]>([])
-  const [notes, setNotes] = useState<NoteProps[]>([])
-  function fetchNotes() {
-    storage.getNotes().then(setNotes)
-  }
+  const [tab, setTab] = useState<string | null>('list')
 
   const addNewList = () => {
-    setLists([...lists, { id: generateResourceId(), sessionId: sessionId!, title: 'New List', items: [] }])
+    createList({ id: generateResourceId(), sessionId: sessionId!, title: 'New List', items: [] })
   }
 
-  const addNewNote = async () => {
-    const newNote = { id: generateResourceId(), sessionId: sessionId!, title: 'New Note', content: '' }
-    setNotes([...notes, newNote])
-    await storage.createNote({
-      ...newNote,
-      date: new Date().toISOString(),
-    });
+  const addNewNote = () => {
+    createNote({ id: generateResourceId(), sessionId: sessionId!, title: 'New Note', content: '' })
   }
 
   const handleTabChange = (tab: string) => {
@@ -45,10 +33,6 @@ export function Home() {
     navigate(`?tab=${currentTab}`, { replace: true })
     setTab(currentTab)
   }, [currentTab, navigate])
-
-  useEffect(() => {
-    fetchNotes()
-  }, [])
 
   useEffect(() => {
     console.log('notes:', notes)
@@ -77,6 +61,7 @@ export function Home() {
         </Flex>
       </Tabs.Content>
       <Tabs.Content value="notes">
+        <Button onClick={sync}>Sync</Button>
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
             {notes.map((props) => <Note key={props.id} {...props} />)}

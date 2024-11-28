@@ -14,4 +14,5 @@ export interface StorageHandler {
   getLists: () => Promise<ListProps[]>
   updateList: (list: ListProps) => Promise<void>
   deleteList: (id: string) => Promise<void>
+  sync?: () => Promise<void>
 }
