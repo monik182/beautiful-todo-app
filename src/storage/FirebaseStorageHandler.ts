@@ -46,7 +46,8 @@ export class FirebaseStorageHandler implements StorageHandler {
       if (isPublic) {
         return note
       }
-      return note.sessionId === this.sessionId ? note : undefined
+      const canAccessNote = note.sessionId === this.sessionId || (note.allowedUsers && note.allowedUsers.includes(this.sessionId))
+      return canAccessNote ? note : undefined
     }
     return undefined
   }
@@ -59,7 +60,7 @@ export class FirebaseStorageHandler implements StorageHandler {
       id: doc.id,
       ...doc.data(),
     })) as NoteProps[]
-    return result?.filter((note) => note.sessionId === this.sessionId)
+    return result?.filter((note) => note.sessionId === this.sessionId || (note.allowedUsers && note.allowedUsers.includes(this.sessionId)))
   }
 
   async updateNote(note: Partial<NoteProps> & { id: string }): Promise<void> {
@@ -87,7 +88,8 @@ export class FirebaseStorageHandler implements StorageHandler {
       if (isPublic) {
         return list
       }
-      return list.sessionId === this.sessionId ? list : undefined
+      const canAccessList = list.sessionId === this.sessionId || (list.allowedUsers && list.allowedUsers.includes(this.sessionId))
+      return canAccessList ? list : undefined
     }
     return undefined
   }
@@ -100,7 +102,7 @@ export class FirebaseStorageHandler implements StorageHandler {
       id: doc.id,
       ...doc.data(),
     })) as ListProps[]
-    return result?.filter((list) => list.sessionId === this.sessionId)
+    return result?.filter((list) => list.sessionId === this.sessionId || (list.allowedUsers && list.allowedUsers.includes(this.sessionId)))
   }
 
   async updateList(list: Partial<ListProps> & { id: string }): Promise<void> {

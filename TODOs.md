@@ -1,4 +1,4 @@
-- [ ] Host
+- [ ] Enter creates a new item
 - [ ] Delete list item
 - [ ] Delete list 
 - [ ] Delete note
@@ -7,10 +7,11 @@
 - [ ] Drag and order list
 - [ ] Add login or some sort of auth?
 - [ ] Export as markdown/txt?
+- [x] Save shared to my collection
+- [x] Host
 - [x] Fix sync refresh of lists
 - [x] Fix sync refresh
 - [x] Shared list page
-- [-] Enter creates a new item [Nope]
 - [x] Shared note page
 - [x] Checked move to bottom
 - [x] Fix responsive

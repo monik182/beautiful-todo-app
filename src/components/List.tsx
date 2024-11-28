@@ -6,6 +6,7 @@ import { SlBasket, SlPlus } from "react-icons/sl"
 import { ExtendedComponentProps, ListItem, ListProps } from '../types'
 import { ShareButton } from './ShareButton'
 import { useDebouncedCallback } from 'use-debounce'
+import { Tag } from './ui/tag'
 
 const sortByChecked = (a: ListItem, b: ListItem) => {
   if (a.checked && !b.checked) return 1
@@ -16,6 +17,7 @@ const sortByChecked = (a: ListItem, b: ListItem) => {
 export function List({ id, title = 'New List', items, onChange, ...props }: ExtendedComponentProps<ListProps>) {
   const [name, setName] = useState(title)
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
+  const isShared = !!props.allowedUsers?.length
 
   const addCheckbox = () => {
     setCheckboxes([
@@ -60,17 +62,22 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
     <Container>
       <Card.Root>
         <Card.Header>
-          <Flex gap="1rem" align="center">
-            <SlBasket />
-            <Editable.Root
-              value={name}
-              onValueChange={(e) => setName(e.value)}
-              placeholder="Click to edit"
-              maxLength={100}
-            >
-              <Editable.Preview />
-              <Editable.Input />
-            </Editable.Root>
+          <Flex gap="1rem" justify="space-between" marginEnd="1rem">
+            <Flex gap="1rem" align="center">
+              <SlBasket />
+              <Editable.Root
+                value={name}
+                onValueChange={(e) => setName(e.value)}
+                placeholder="Click to edit"
+                maxLength={100}
+              >
+                <Editable.Preview />
+                <Editable.Input />
+              </Editable.Root>
+            </Flex>
+            {isShared && (
+              <Tag colorPalette="teal" variant="outline" size="sm">Shared</Tag>
+            )}
           </Flex>
           <ShareButton resourceId={id} type="list" />
         </Card.Header>
