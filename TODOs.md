@@ -1,12 +1,12 @@
-- [ ] Fix responsive
-- [ ] Host
-- [ ] Drag and order list
-- [ ] Enter creates a new item
-- [ ] Checked move to bottom
 - [ ] Notes/List search bar
+- [ ] Host
+- [ ] Create icon select
+- [ ] Drag and order list
 - [ ] Add login or some sort of auth?
-- [ ] Make icon select?
 - [ ] Export as markdown/txt?
+- [-] Enter creates a new item [Nope]
+- [x] Checked move to bottom
+- [x] Fix responsive
 - [x] Add navigation
 - [x] Add sync
 - [x] Integrate firebase

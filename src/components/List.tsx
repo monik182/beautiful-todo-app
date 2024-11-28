@@ -7,6 +7,11 @@ import { ExtendedComponentProps, ListItem, ListProps } from '../types'
 import { ShareButton } from './ShareButton'
 import { useDebouncedCallback } from 'use-debounce'
 
+const sortByChecked = (a: ListItem, b: ListItem) => {
+  if (a.checked && !b.checked) return 1
+  if (!a.checked && b.checked) return -1
+  return 0
+}
 
 export function List({ id, title = 'New List', items, onChange, ...props }: ExtendedComponentProps<ListProps>) {
   const [name, setName] = useState(title)
@@ -16,14 +21,14 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
     setCheckboxes([
       ...checkboxes,
       { id: (checkboxes.length + 1).toString(), content: '', checked: false },
-    ])
+    ].sort(sortByChecked))
   }
 
   const toggleCheckbox = (id: string) => {
     setCheckboxes(
       checkboxes.map((checkbox) =>
         checkbox.id === id ? { ...checkbox, checked: !checkbox.checked } : checkbox
-      )
+      ).sort(sortByChecked)
     )
   }
 
@@ -31,7 +36,7 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
     setCheckboxes(
       checkboxes.map((checkbox) =>
         checkbox.id === id ? { ...checkbox, content } : checkbox
-      )
+      ).sort(sortByChecked)
     )
   }
 

@@ -5,7 +5,7 @@ import { Toaster } from './components/ui/toaster'
 export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
-    <Container margin="1rem 2rem">
+    <Container margin={{ sm: "1rem 0", md: "1rem 2rem" }}>
       <Header />
       {children}
       <Toaster />
