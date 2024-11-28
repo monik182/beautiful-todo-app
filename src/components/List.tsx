@@ -43,7 +43,7 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
   const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
 
   const handleSave = () => {
-    debounced({ id, title: name, items: checkboxes })
+    debounced({ id, title: name, items: checkboxes, ...props })
   }
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { Home, NotePreview } from './pages'
 import { Center, Flex, Spinner, VStack, Text } from '@chakra-ui/react'
 import { StorageProvider } from './storage'
+import { ListPreview } from './pages/ListPreview'
 
 function AppContent() {
   const { sessionId } = useSessionContext()
@@ -25,11 +26,12 @@ function AppContent() {
   }
 
   return (
-    <StorageProvider sessionId={sessionId}>
+    <StorageProvider sessionId={sessionId} useFirebase={false}>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/note" element={<NotePreview />} />
+          <Route path="/list" element={<ListPreview />} />
         </Routes>
       </Layout>
     </StorageProvider>

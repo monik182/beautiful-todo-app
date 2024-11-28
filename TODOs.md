@@ -1,11 +1,14 @@
 - [ ] Fix sync refresh
-- [ ] Shared list page
 - [ ] Host
+- [ ] Delete list item
+- [ ] Delete list 
+- [ ] Delete note
 - [ ] Create icon select
 - [ ] Notes/List search bar
 - [ ] Drag and order list
 - [ ] Add login or some sort of auth?
 - [ ] Export as markdown/txt?
+- [x] Shared list page
 - [-] Enter creates a new item [Nope]
 - [x] Shared note page
 - [x] Checked move to bottom
