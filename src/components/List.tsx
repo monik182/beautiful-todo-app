@@ -2,7 +2,7 @@ import { Card, Container, Editable, Flex, IconButton } from '@chakra-ui/react'
 import { Checkbox } from './ui/checkbox'
 import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
-import { SlBasket, SlPlus, SlTrash } from "react-icons/sl"
+import { SlBasket, SlClose, SlPlus, SlTrash } from "react-icons/sl"
 import { ExtendedComponentProps, ListItem, ListProps } from '../types'
 import { ShareButton } from './ShareButton'
 import { useDebouncedCallback } from 'use-debounce'
@@ -49,6 +49,10 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
         checkbox.id === id ? { ...checkbox, content } : checkbox
       ).sort(sortByChecked)
     )
+  }
+
+  const removeItem = (id: string) => {
+    setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id))
   }
 
   const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
@@ -111,22 +115,32 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
         </Card.Header>
         <Card.Body overflow="auto">
           {checkboxes.map((checkbox, index) => (
-            <Flex key={checkbox.id} gap="5px">
-              <Checkbox
-                checked={checkbox.checked}
-                variant="outline"
-                colorPalette="yellow"
-                onCheckedChange={() => toggleCheckbox(checkbox.id)}
-              />
-              <Editable.Root
-                value={checkbox.content}
-                onValueChange={(e) => updateCheckbox(checkbox.id, e.value)}
-                placeholder="Click to edit"
-                onKeyDown={(e) => handleKeyDown(e, index)}
+            <Flex key={checkbox.id} justify="space-between">
+              <Flex gap="5px">
+                <Checkbox
+                  checked={checkbox.checked}
+                  variant="outline"
+                  colorPalette="yellow"
+                  onCheckedChange={() => toggleCheckbox(checkbox.id)}
+                />
+                <Editable.Root
+                  value={checkbox.content}
+                  onValueChange={(e) => updateCheckbox(checkbox.id, e.value)}
+                  placeholder="Click to edit"
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                >
+                  <Editable.Preview />
+                  <Editable.Input />
+                </Editable.Root>
+              </Flex>
+              <IconButton
+                aria-label="Remove list item"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeItem(checkbox.id)}
               >
-                <Editable.Preview />
-                <Editable.Input />
-              </Editable.Root>
+                <SlClose />
+              </IconButton>
             </Flex>
           ))}
         </Card.Body>
