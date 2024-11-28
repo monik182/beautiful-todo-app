@@ -14,7 +14,7 @@ export function Header() {
           <nav>
             <ul>
               <li>
-                <Link href="/">Home Chakra</Link>
+                <Link href="/">Home</Link>
               </li>
             </ul>
           </nav>

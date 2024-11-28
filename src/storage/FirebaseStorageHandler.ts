@@ -55,10 +55,11 @@ export class FirebaseStorageHandler implements StorageHandler {
     const notesQuery = query(this.notesCollection)
     const querySnapshot = await getDocs(notesQuery)
 
-    return querySnapshot.docs.map((doc) => ({
+    const result = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as NoteProps[]
+    return result?.filter((note) => note.sessionId === this.sessionId)
   }
 
   async updateNote(note: Partial<NoteProps> & { id: string }): Promise<void> {
@@ -95,10 +96,11 @@ export class FirebaseStorageHandler implements StorageHandler {
     const listsQuery = query(this.listsCollection)
     const querySnapshot = await getDocs(listsQuery)
 
-    return querySnapshot.docs.map((doc) => ({
+    const result = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as ListProps[]
+    return result?.filter((list) => list.sessionId === this.sessionId)
   }
 
   async updateList(list: Partial<ListProps> & { id: string }): Promise<void> {
