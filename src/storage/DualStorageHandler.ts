@@ -69,7 +69,11 @@ export class DualStorageHandler implements StorageHandler {
   }
 
   async getNote(id: string, isPublic?: boolean): Promise<NoteProps | undefined> {
-    return this.indexedDBHandler.getNote(id, isPublic) ?? this.firebaseHandler.getNote(id, isPublic)
+    let note = await this.indexedDBHandler.getNote(id, isPublic)
+    if (!note) {
+      note = await this.firebaseHandler.getNote(id, isPublic)
+    }
+    return note
   }
 
   async getNotes(): Promise<NoteProps[]> {
@@ -99,7 +103,11 @@ export class DualStorageHandler implements StorageHandler {
   }
 
   async getList(id: string, isPublic?: boolean): Promise<ListProps | undefined> {
-    return this.indexedDBHandler.getList(id, isPublic) ?? this.firebaseHandler.getList(id, isPublic)
+    let list = await this.indexedDBHandler.getList(id, isPublic)
+    if (!list) {
+      list = await this.firebaseHandler.getList(id, isPublic)
+    }
+    return list
   }
 
   async getLists(): Promise<ListProps[]> {

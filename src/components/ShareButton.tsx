@@ -11,7 +11,7 @@ export const ShareButton = ({ type, resourceId }: ShareButtonProps) => {
   const handleShare = () => {
     let currentUrl = window.location.origin
 
-    currentUrl = currentUrl + `/${type}?id=${resourceId}&public=true`
+    currentUrl = currentUrl + `/${type}?id=${resourceId}&public=true&edit=true`
 
     if (navigator.share) {
       navigator.share({

@@ -27,6 +27,36 @@ export const useStorageManager = () => {
     }
   }, [storage])
 
+  const getNote = useCallback(async (id: string, isPublic: boolean) => {
+    try {
+      setLoading(true)
+      return await storage.getNote(id, isPublic)
+    } catch (error) {
+      console.error('Error getting note:', error)
+      toaster.create({
+        title: 'Error Getting Note',
+        type: 'error',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }, [storage])
+
+  const getList = useCallback(async (id: string, isPublic: boolean) => {
+    try {
+      setLoading(true)
+      return await storage.getList(id, isPublic)
+    } catch (error) {
+      console.error('Error getting list:', error)
+      toaster.create({
+        title: 'Error Getting List',
+        type: 'error',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }, [storage])
+
   const createNote = useCallback(
     async (note: NoteProps) => {
       try {
@@ -161,6 +191,8 @@ export const useStorageManager = () => {
     try {
       setLoading(true)
       await storage.sync?.()
+      await fetchLists()
+      await fetchNotes()
       toaster.create({
         title: 'Synced Successfully',
         type: 'success',
@@ -174,7 +206,7 @@ export const useStorageManager = () => {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [fetchLists, fetchNotes, storage])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -191,6 +223,8 @@ export const useStorageManager = () => {
     lists,
     loading,
     sync,
+    getNote,
+    getList,
     createNote,
     updateNote,
     deleteNote,

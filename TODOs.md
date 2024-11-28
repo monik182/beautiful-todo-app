@@ -1,10 +1,13 @@
-- [ ] Notes/List search bar
+- [ ] Fix sync refresh
+- [ ] Shared list page
 - [ ] Host
 - [ ] Create icon select
+- [ ] Notes/List search bar
 - [ ] Drag and order list
 - [ ] Add login or some sort of auth?
 - [ ] Export as markdown/txt?
 - [-] Enter creates a new item [Nope]
+- [x] Shared note page
 - [x] Checked move to bottom
 - [x] Fix responsive
 - [x] Add navigation
