@@ -49,7 +49,7 @@ export const SessionProvider = ({ children }: { children: JSX.Element }) => {
   }, [sessionId])
 
   useEffect(() => {
-    const id = params.get('id');
+    const id = params.get('sessionId');
     console.log('Setting session ID from param:', id)
 
     if (id) {

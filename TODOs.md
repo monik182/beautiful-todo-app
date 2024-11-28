@@ -1,11 +1,14 @@
+- [x] fix new note save
 - [ ] CRUD by session id
-- [ ] Enter creates a new item
-- [ ] Drag and order list
-- [ ] fix new note save
+- [ ] Add sync
 - [ ] Integrate firebase
-- [ ] Add login or some sort of auth?
-- [ ] Export as markdown?
-- [ ] Host
 - [ ] Fix responsive
-- [ ] Make icon select?
 - [ ] Add navigation
+- [ ] Host
+- [ ] Drag and order list
+- [ ] Enter creates a new item
+- [ ] Checked move to bottom
+- [ ] Add login or some sort of auth?
+- [ ] Make icon select?
+- [ ] Export as markdown/txt?
+- [ ]
