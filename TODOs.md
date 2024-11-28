@@ -1,12 +1,13 @@
-- [ ] Enter creates a new item
-- [ ] Delete list item
+- [ ] Limit height for lists
 - [ ] Delete list 
 - [ ] Delete note
+- [ ] Delete list item
 - [ ] Create icon select
 - [ ] Notes/List search bar
 - [ ] Drag and order list
 - [ ] Add login or some sort of auth?
 - [ ] Export as markdown/txt?
+- [x] Enter creates a new item
 - [x] Save shared to my collection
 - [x] Host
 - [x] Fix sync refresh of lists

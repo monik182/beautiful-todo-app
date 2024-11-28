@@ -1,6 +1,6 @@
 import { Card, Container, Editable, Flex } from '@chakra-ui/react'
 import { Checkbox } from './ui/checkbox'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from './ui/button'
 import { SlBasket, SlPlus } from "react-icons/sl"
 import { ExtendedComponentProps, ListItem, ListProps } from '../types'
@@ -19,11 +19,20 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
   const isShared = !!props.allowedUsers?.length
 
-  const addCheckbox = () => {
+  const addCheckbox = (pos?: number) => {
+    if (pos !== undefined) {
+      const newId = (checkboxes.length + 1).toString()
+      setCheckboxes([
+        ...checkboxes.slice(0, pos + 1),
+        { id: newId, content: '', checked: false },
+        ...checkboxes.slice(pos + 1),
+      ])
+      return
+    }
     setCheckboxes([
       ...checkboxes,
       { id: (checkboxes.length + 1).toString(), content: '', checked: false },
-    ].sort(sortByChecked))
+    ])
   }
 
   const toggleCheckbox = (id: string) => {
@@ -46,6 +55,12 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
 
   const handleSave = () => {
     debounced({ id, title: name, items: checkboxes, ...props })
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, index: number) => {
+    if (e.key === 'Enter') {
+      addCheckbox(index)
+    }
   }
 
   useEffect(() => {
@@ -82,7 +97,7 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
           <ShareButton resourceId={id} type="list" />
         </Card.Header>
         <Card.Body>
-          {checkboxes.map((checkbox) => (
+          {checkboxes.map((checkbox, index) => (
             <Flex key={checkbox.id} gap="5px">
               <Checkbox
                 checked={checkbox.checked}
@@ -94,6 +109,7 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
                 value={checkbox.content}
                 onValueChange={(e) => updateCheckbox(checkbox.id, e.value)}
                 placeholder="Click to edit"
+                onKeyDown={(e) => handleKeyDown(e, index)}
               >
                 <Editable.Preview />
                 <Editable.Input />
@@ -102,7 +118,7 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
           ))}
         </Card.Body>
         <Card.Footer>
-          <Button colorPalette="yellow" variant="outline" onClick={addCheckbox}>
+          <Button colorPalette="yellow" variant="outline" onClick={() => addCheckbox()}>
             <SlPlus /> List Item
           </Button>
         </Card.Footer>
