@@ -50,6 +50,12 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
     handleSave()
   }, [checkboxes, name])
 
+  useEffect(() => {
+    if (JSON.stringify(items) !== JSON.stringify(checkboxes)) {
+      setCheckboxes(items)
+    }
+  }, [items])
+
   return (
     <Container>
       <Card.Root>

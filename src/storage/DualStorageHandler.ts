@@ -44,19 +44,23 @@ export class DualStorageHandler implements StorageHandler {
     // Sync Lists
     const localLists = await this.indexedDBHandler.getLists()
     const remoteLists = await this.firebaseHandler.getLists()
+    const localMap = new Map(localLists.map((list) => [list.id, list]))
 
-    // Sync local lists to Firebase
-    for (const list of localLists) {
-      if (!remoteLists.find((remote) => remote.id === list.id)) {
-        await this.firebaseHandler.createList(list)
+    // Sync remote lists to local
+    for (const remoteList of remoteLists) {
+      const localList = localMap.get(remoteList.id)
+      if (!localList) {
+        await this.indexedDBHandler.createList(remoteList)
+      } else if (JSON.stringify(localList) !== JSON.stringify(remoteList)) {
+        await this.indexedDBHandler.updateList(remoteList)
       }
+
+      localMap.delete(remoteList.id)
     }
 
-    // Sync Firebase lists to IndexedDB
-    for (const list of remoteLists) {
-      if (!localLists.find((local) => local.id === list.id)) {
-        await this.indexedDBHandler.createList(list)
-      }
+    // Sync local lists to remote
+    for (const localList of localMap.values()) {
+      await this.firebaseHandler.createList(localList)
     }
   }
 
