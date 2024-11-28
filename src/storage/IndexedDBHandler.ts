@@ -31,7 +31,7 @@ export class IndexedDBHandler implements StorageHandler {
 
   // Note CRUD
   async createNote(note: NoteProps): Promise<void> {
-    await this.db.put("notes", { ...note, sessionId: this.sessionId })
+    await this.db.put("notes", note)
   }
 
   async getNote(id: string, isPublic = false): Promise<NoteProps | undefined> {
@@ -39,18 +39,19 @@ export class IndexedDBHandler implements StorageHandler {
     if (isPublic) {
       return note
     }
-    return note?.sessionId === this.sessionId ? note : undefined
+    const canAccessNote = note?.sessionId === this.sessionId || (note?.allowedUsers && note.allowedUsers.includes(this.sessionId))
+    return canAccessNote ? note : undefined
   }
 
   async getNotes(): Promise<NoteProps[]> {
     const notes = await this.db.getAll("notes")
-    return notes.filter((note) => note.sessionId === this.sessionId)
+    return notes.filter((note) => note.sessionId === this.sessionId || (note.allowedUsers && note.allowedUsers.includes(this.sessionId)))
   }
 
   async updateNote(note: NoteProps): Promise<void> {
     const existingNote = await this.getNote(note.id)
     if (existingNote) {
-      await this.db.put("notes", { ...note, sessionId: this.sessionId })
+      await this.db.put("notes", note)
     }
   }
 
@@ -63,7 +64,7 @@ export class IndexedDBHandler implements StorageHandler {
 
   // List CRUD
   async createList(list: ListProps): Promise<void> {
-    await this.db.put("lists", { ...list, sessionId: this.sessionId })
+    await this.db.put("lists", list)
   }
 
   async getList(id: string, isPublic = false): Promise<ListProps | undefined> {
@@ -71,18 +72,19 @@ export class IndexedDBHandler implements StorageHandler {
     if (isPublic) {
       return list
     }
-    return list?.sessionId === this.sessionId ? list : undefined
+    const canAccessList = list?.sessionId === this.sessionId || (list?.allowedUsers && list.allowedUsers.includes(this.sessionId))
+    return canAccessList ? list : undefined
   }
 
   async getLists(): Promise<ListProps[]> {
     const lists = await this.db.getAll("lists")
-    return lists.filter((list) => list.sessionId === this.sessionId)
+    return lists.filter((list) => list.sessionId === this.sessionId || (list.allowedUsers && list.allowedUsers.includes(this.sessionId)))
   }
 
   async updateList(list: ListProps): Promise<void> {
     const existingList = await this.getList(list.id)
     if (existingList) {
-      await this.db.put("lists", { ...list, sessionId: this.sessionId })
+      await this.db.put("lists", list)
     }
   }
 
