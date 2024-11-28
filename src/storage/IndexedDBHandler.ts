@@ -34,8 +34,11 @@ export class IndexedDBHandler implements StorageHandler {
     await this.db.put("notes", { ...note, sessionId: this.sessionId })
   }
 
-  async getNote(id: string): Promise<NoteProps | undefined> {
+  async getNote(id: string, isPublic = false): Promise<NoteProps | undefined> {
     const note = await this.db.get("notes", id)
+    if (isPublic) {
+      return note
+    }
     return note?.sessionId === this.sessionId ? note : undefined
   }
 
@@ -63,8 +66,11 @@ export class IndexedDBHandler implements StorageHandler {
     await this.db.put("lists", { ...list, sessionId: this.sessionId })
   }
 
-  async getList(id: string): Promise<ListProps | undefined> {
+  async getList(id: string, isPublic = false): Promise<ListProps | undefined> {
     const list = await this.db.get("lists", id)
+    if (isPublic) {
+      return list
+    }
     return list?.sessionId === this.sessionId ? list : undefined
   }
 

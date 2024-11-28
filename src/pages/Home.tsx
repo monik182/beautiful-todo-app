@@ -1,16 +1,15 @@
 import { Flex, SimpleGrid, Tabs } from '@chakra-ui/react';
 import { Button } from '../components/ui/button';
 import { SlList, SlNote, SlPlus } from 'react-icons/sl';
-import { useSessionContext } from '../SessionProvider';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useQueryParams } from '../hooks/useQueryParams';
 import { ListProps, NoteProps } from '../types';
 import { List, Note } from '../components';
 import { useStorage } from '../storage';
+import { generateResourceId } from '../utils';
 
 export function Home() {
-  const { sessionId } = useSessionContext()
   const storage = useStorage()
   const navigate = useNavigate()
   const params = useQueryParams()
@@ -23,11 +22,11 @@ export function Home() {
   }
 
   const addNewList = () => {
-    setLists([...lists, { id: (lists.length + 1).toString(), title: 'New List', items: [] }])
+    setLists([...lists, { id: generateResourceId(), title: 'New List', items: [] }])
   }
 
   const addNewNote = async () => {
-    const newNote = { id: (notes.length + 1).toString(), title: 'New Note', content: '' }
+    const newNote = { id: generateResourceId(), title: 'New Note', content: '' }
     setNotes([...notes, newNote])
     await storage.createNote({
       ...newNote,
@@ -47,7 +46,7 @@ export function Home() {
 
   useEffect(() => {
     fetchNotes()
-  }, [sessionId])
+  }, [])
 
   useEffect(() => {
     console.log('notes:', notes)
@@ -68,7 +67,7 @@ export function Home() {
       <Tabs.Content value="list">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {lists.map((props) => <List key={props.id} sessionId={sessionId!} {...props} />)}
+            {lists.map((props) => <List key={props.id} {...props} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
             <SlPlus /> New List
@@ -78,7 +77,7 @@ export function Home() {
       <Tabs.Content value="notes">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {notes.map((props) => <Note key={props.id} sessionId={sessionId!} {...props} />)}
+            {notes.map((props) => <Note key={props.id} {...props} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
             <SlPlus /> New Note

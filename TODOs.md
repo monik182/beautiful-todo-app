@@ -1,7 +1,7 @@
 - [x] fix new note save
-- [ ] CRUD by session id
-- [ ] Add sync
 - [ ] Integrate firebase
+- [x] CRUD by resource id
+- [ ] Add sync
 - [ ] Fix responsive
 - [ ] Add navigation
 - [ ] Host

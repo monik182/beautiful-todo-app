@@ -3,11 +3,11 @@ import { Checkbox } from './ui/checkbox'
 import { useState } from 'react'
 import { Button } from './ui/button'
 import { SlBasket, SlPlus } from "react-icons/sl"
-import { ListItem, ListProps, PropsWithSessionId } from '../types'
+import { ListItem, ListProps } from '../types'
 import { ShareButton } from './ShareButton'
 
 
-export function List({ sessionId, id, title = 'New List', items }: PropsWithSessionId<ListProps>) {
+export function List({ id, title = 'New List', items }: ListProps) {
   const [name, setName] = useState(title)
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
 
@@ -44,12 +44,13 @@ export function List({ sessionId, id, title = 'New List', items }: PropsWithSess
               value={name}
               onValueChange={(e) => setName(e.value)}
               placeholder="Click to edit"
+              maxLength={100}
             >
               <Editable.Preview />
               <Editable.Input />
             </Editable.Root>
           </Flex>
-          <ShareButton sessionId={sessionId} resourceId={id} type="list" />
+          <ShareButton resourceId={id} type="list" />
         </Card.Header>
         <Card.Body>
           {checkboxes.map((checkbox) => (

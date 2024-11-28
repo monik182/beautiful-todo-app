@@ -3,7 +3,6 @@ export interface NoteProps {
   title: string
   content: string
   icon?: string
-
   date?: string
 }
 

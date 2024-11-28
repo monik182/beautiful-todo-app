@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { useQueryParams } from './hooks/useQueryParams'
 
 type SessionContextType = {
   sessionId: string | null
@@ -16,7 +15,6 @@ export const useSessionContext = () => {
 }
 
 export const SessionProvider = ({ children }: { children: JSX.Element }) => {
-  const params = useQueryParams()
   const hasInitialized = useRef(false)
   const [sessionId, setSession] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
@@ -47,16 +45,6 @@ export const SessionProvider = ({ children }: { children: JSX.Element }) => {
       setSession(newSession)
     }
   }, [sessionId])
-
-  useEffect(() => {
-    const id = params.get('sessionId');
-    console.log('Setting session ID from param:', id)
-
-    if (id) {
-      localStorage.setItem('sessionId', id)
-      localStorage.setItem('sessionExpiry', (new Date().getTime() + 30 * 24 * 60 * 60 * 1000).toString())
-    }
-  }, [params])
 
   return (
     <SessionContext.Provider value={{ sessionId }}>

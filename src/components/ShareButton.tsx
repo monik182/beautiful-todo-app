@@ -7,15 +7,11 @@ interface ShareButtonProps {
   resourceId: string
 }
 
-export const ShareButton = ({ sessionId, type, resourceId }: ShareButtonProps) => {
+export const ShareButton = ({ type, resourceId }: ShareButtonProps) => {
   const handleShare = () => {
     let currentUrl = window.location.origin
 
-    if (!sessionId) {
-      return null
-    }
-
-    currentUrl = currentUrl + `/${type}?sessionId=${sessionId}&id=${resourceId}`
+    currentUrl = currentUrl + `/${type}?id=${resourceId}&public=true`
 
     if (navigator.share) {
       navigator.share({
