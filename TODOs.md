@@ -1,4 +1,4 @@
-- [ ] Fix sync refresh
+- [ ] Fix sync refresh of lists
 - [ ] Host
 - [ ] Delete list item
 - [ ] Delete list 
@@ -8,6 +8,7 @@
 - [ ] Drag and order list
 - [ ] Add login or some sort of auth?
 - [ ] Export as markdown/txt?
+- [x] Fix sync refresh
 - [x] Shared list page
 - [-] Enter creates a new item [Nope]
 - [x] Shared note page

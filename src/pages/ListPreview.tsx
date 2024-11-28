@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { List } from '../components'
 import { useQueryParams } from '../hooks/useQueryParams'
 import { ListProps } from '../types'
-import { useStorageManager } from '../hooks/useStorageManager'
+import { useStorage } from '../storage'
 
 export function ListPreview() {
-  const { getList, updateList } = useStorageManager()
+  const { getList, updateList } = useStorage()
   const params = useQueryParams()
   const id = params.get('id')
   const isPublic = !!params.get('public')

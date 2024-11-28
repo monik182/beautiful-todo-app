@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { Note } from '../components'
 import { useQueryParams } from '../hooks/useQueryParams'
 import { NoteProps } from '../types'
-import { useStorageManager } from '../hooks/useStorageManager'
+import { useStorage } from '../storage'
 
 export function NotePreview() {
-  const { getNote, updateNote } = useStorageManager()
+  const { getNote, updateNote } = useStorage()
   const params = useQueryParams()
   const id = params.get('id')
   const isPublic = !!params.get('public')

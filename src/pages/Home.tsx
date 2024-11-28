@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useQueryParams } from '../hooks/useQueryParams';
 import { List, Note } from '../components';
-import { generateResourceId } from '../utils';
+import { generateResourceId } from '../storage/utils/utils';
 import { useSessionContext } from '../SessionProvider';
-import { useStorageManager } from '../hooks/useStorageManager';
+import { useStorage } from '../storage';
 export function Home() {
   const navigate = useNavigate()
   const params = useQueryParams()
   const { sessionId } = useSessionContext()
-  const { notes, lists, createNote, createList, updateNote, updateList } = useStorageManager()
+  const { notes, lists, createNote, createList, updateNote, updateList } = useStorage()
   const currentTab = params.get('tab') || 'list'
   const [tab, setTab] = useState<string | null>('list')
 

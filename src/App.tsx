@@ -26,7 +26,7 @@ function AppContent() {
   }
 
   return (
-    <StorageProvider sessionId={sessionId} useFirebase={false}>
+    <StorageProvider sessionId={sessionId}>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
