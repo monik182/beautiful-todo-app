@@ -51,15 +51,17 @@ export function Note({ id, title = 'New Note', content, onChange, onRemove, ...p
             </Editable.Root>
           </Flex>
           <Flex align="center" gap="5px">
-            <IconButton
-              aria-label="Delete note"
-              colorPalette="red"
-              variant="plain"
-              size="sm"
-              onClick={() => onRemove?.(id)}
-            >
-              <SlTrash />
-            </IconButton>
+            {onRemove && (
+              <IconButton
+                aria-label="Delete note"
+                colorPalette="red"
+                variant="plain"
+                size="sm"
+                onClick={() => onRemove(id)}
+              >
+                <SlTrash />
+              </IconButton>
+            )}
             {isShared && (
               <Tag colorPalette="teal" variant="outline" size="sm">Shared</Tag>
             )}

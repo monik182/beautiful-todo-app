@@ -91,15 +91,17 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
               </Editable.Root>
             </Flex>
             <Flex align="center" gap="5px">
-              <IconButton
-                aria-label="Delete list"
-                colorPalette="red"
-                variant="plain"
-                size="sm"
-                onClick={() => onRemove?.(id)}
-              >
-                <SlTrash />
-              </IconButton>
+              {onRemove && (
+                <IconButton
+                  aria-label="Delete list"
+                  colorPalette="red"
+                  variant="plain"
+                  size="sm"
+                  onClick={() => onRemove(id)}
+                >
+                  <SlTrash />
+                </IconButton>
+              )}
               {isShared && (
                 <Tag colorPalette="teal" variant="outline" size="sm">Shared</Tag>
               )}

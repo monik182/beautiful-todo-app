@@ -29,6 +29,10 @@ export function Home() {
     navigate(`?tab=${tab}`, { replace: true })
   }
 
+  const isOwner = (resourceSessionId: string) => {
+    return sessionId === resourceSessionId
+  }
+
   useEffect(() => {
     navigate(`?tab=${currentTab}`, { replace: true })
     setTab(currentTab)
@@ -49,7 +53,7 @@ export function Home() {
       <Tabs.Content value="list">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {lists.map((props) => <List key={props.id} {...props} onChange={updateList} onRemove={deleteList} />)}
+            {lists.map((props) => <List key={props.id} {...props} onChange={updateList} onRemove={isOwner(props.sessionId) ? deleteList : undefined} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
             <SlPlus /> New List
@@ -59,7 +63,7 @@ export function Home() {
       <Tabs.Content value="notes">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {notes.map((props) => <Note key={props.id} {...props} onChange={updateNote} onRemove={deleteNote} />)}
+            {notes.map((props) => <Note key={props.id} {...props} onChange={updateNote} onRemove={isOwner(props.sessionId) ? deleteNote : undefined} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
             <SlPlus /> New Note
