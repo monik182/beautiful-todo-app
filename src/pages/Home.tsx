@@ -12,16 +12,16 @@ export function Home() {
   const navigate = useNavigate()
   const params = useQueryParams()
   const { sessionId } = useSessionContext()
-  const { notes, lists, sync, createNote, createList, updateNote } = useStorageManager()
+  const { notes, lists, createNote, createList, updateNote, updateList } = useStorageManager()
   const currentTab = params.get('tab') || 'list'
   const [tab, setTab] = useState<string | null>('list')
 
   const addNewList = () => {
-    createList({ id: generateResourceId(), sessionId: sessionId!, title: 'New List', items: [] })
+    createList({ id: generateResourceId(), sessionId: sessionId!, title: 'New List', items: [], date: new Date().toISOString() })
   }
 
   const addNewNote = () => {
-    createNote({ id: generateResourceId(), sessionId: sessionId!, title: 'New Note', content: '' })
+    createNote({ id: generateResourceId(), sessionId: sessionId!, title: 'New Note', content: '', date: new Date().toISOString() })
   }
 
   const handleTabChange = (tab: string) => {
@@ -34,10 +34,6 @@ export function Home() {
     setTab(currentTab)
   }, [currentTab, navigate])
 
-  useEffect(() => {
-    console.log('notes:', notes)
-  }, [notes])
-  
   return (
     <Tabs.Root defaultValue="list" value={tab} onValueChange={(e) => handleTabChange(e.value)}>
       <Tabs.List>
@@ -53,7 +49,7 @@ export function Home() {
       <Tabs.Content value="list">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {lists.map((props) => <List key={props.id} {...props} />)}
+            {lists.map((props) => <List key={props.id} {...props} onChange={updateList} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
             <SlPlus /> New List
@@ -61,7 +57,6 @@ export function Home() {
         </Flex>
       </Tabs.Content>
       <Tabs.Content value="notes">
-        <Button onClick={sync}>Sync</Button>
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
             {notes.map((props) => <Note key={props.id} {...props} onChange={updateNote} />)}

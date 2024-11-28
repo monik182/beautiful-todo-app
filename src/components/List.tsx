@@ -1,13 +1,14 @@
 import { Card, Container, Editable, Flex } from '@chakra-ui/react'
 import { Checkbox } from './ui/checkbox'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { SlBasket, SlPlus } from "react-icons/sl"
-import { ListItem, ListProps } from '../types'
+import { ExtendedComponentProps, ListItem, ListProps } from '../types'
 import { ShareButton } from './ShareButton'
+import { useDebouncedCallback } from 'use-debounce'
 
 
-export function List({ id, title = 'New List', items }: ListProps) {
+export function List({ id, title = 'New List', items, onChange, ...props }: ExtendedComponentProps<ListProps>) {
   const [name, setName] = useState(title)
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
 
@@ -33,6 +34,16 @@ export function List({ id, title = 'New List', items }: ListProps) {
       )
     )
   }
+
+  const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
+
+  const handleSave = () => {
+    debounced({ id, title: name, items: checkboxes })
+  }
+
+  useEffect(() => {
+    handleSave()
+  }, [checkboxes, name])
 
   return (
     <Container>

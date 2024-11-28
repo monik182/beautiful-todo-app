@@ -30,11 +30,7 @@ export function Note({ id, title = 'New Note', content, onChange, ...props }: Ex
     debounced(updatedNote as NoteProps)
   }
 
-  const handleSave = (note: NoteProps) => {
-    onChange?.(note)
-  }
-
-  const debounced = useDebouncedCallback((value) => handleSave(value), 500)
+  const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
 
   return (
     <Card.Root>
