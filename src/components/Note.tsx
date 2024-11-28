@@ -35,7 +35,7 @@ export function Note({ id, title = 'New Note', content, onChange, ...props }: Ex
   const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
 
   return (
-    <Card.Root>
+    <Card.Root lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
       <Card.Header position="relative">
         <Flex gap="1rem" justify="space-between" marginEnd="1rem">
           <Flex gap="1rem" align="center">
@@ -56,10 +56,10 @@ export function Note({ id, title = 'New Note', content, onChange, ...props }: Ex
         </Flex>
         <ShareButton resourceId={id} type="note" />
       </Card.Header>
-      <Card.Body>
+      <Card.Body overflow="auto">
         <Textarea
           value={text}
-          maxLength={1000}
+          maxLength={5000}
           variant="flushed"
           placeholder="Write your thoughts ❤️..."
           onChange={(e) => handleChange({ content: e.target.value })}

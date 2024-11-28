@@ -74,8 +74,8 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
   }, [items])
 
   return (
-    <Container>
-      <Card.Root>
+    <Container lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
+      <Card.Root lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
         <Card.Header>
           <Flex gap="1rem" justify="space-between" marginEnd="1rem">
             <Flex gap="1rem" align="center">
@@ -96,7 +96,7 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
           </Flex>
           <ShareButton resourceId={id} type="list" />
         </Card.Header>
-        <Card.Body>
+        <Card.Body overflow="auto">
           {checkboxes.map((checkbox, index) => (
             <Flex key={checkbox.id} gap="5px">
               <Checkbox
