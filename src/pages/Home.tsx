@@ -12,7 +12,7 @@ export function Home() {
   const navigate = useNavigate()
   const params = useQueryParams()
   const { sessionId } = useSessionContext()
-  const { notes, lists, createNote, createList, updateNote, updateList } = useStorage()
+  const { notes, lists, createNote, createList, updateNote, updateList, deleteList, deleteNote } = useStorage()
   const currentTab = params.get('tab') || 'list'
   const [tab, setTab] = useState<string | null>('list')
 
@@ -49,7 +49,7 @@ export function Home() {
       <Tabs.Content value="list">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {lists.map((props) => <List key={props.id} {...props} onChange={updateList} />)}
+            {lists.map((props) => <List key={props.id} {...props} onChange={updateList} onRemove={deleteList} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
             <SlPlus /> New List
@@ -59,7 +59,7 @@ export function Home() {
       <Tabs.Content value="notes">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {notes.map((props) => <Note key={props.id} {...props} onChange={updateNote} />)}
+            {notes.map((props) => <Note key={props.id} {...props} onChange={updateNote} onRemove={deleteNote} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
             <SlPlus /> New Note

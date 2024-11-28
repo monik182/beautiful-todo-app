@@ -1,12 +1,12 @@
-import { Card, Editable, Flex, Textarea } from '@chakra-ui/react'
+import { Card, Editable, Flex, IconButton, Textarea } from '@chakra-ui/react'
 import { useState } from 'react'
-import { SlHeart } from 'react-icons/sl'
+import { SlHeart, SlTrash } from 'react-icons/sl'
 import { ExtendedComponentProps, NoteProps } from '../types'
 import { ShareButton } from '.'
 import { useDebouncedCallback } from 'use-debounce'
 import { Tag } from './ui/tag'
 
-export function Note({ id, title = 'New Note', content, onChange, ...props }: ExtendedComponentProps<NoteProps>) {
+export function Note({ id, title = 'New Note', content, onChange, onRemove, ...props }: ExtendedComponentProps<NoteProps>) {
   const [name, setName] = useState(title)
   const [text, setContent] = useState(content)
   const isShared = !!props.allowedUsers?.length
@@ -50,9 +50,20 @@ export function Note({ id, title = 'New Note', content, onChange, ...props }: Ex
               <Editable.Input />
             </Editable.Root>
           </Flex>
-          {isShared && (
-            <Tag colorPalette="teal" variant="outline" size="sm">Shared</Tag>
-          )}
+          <Flex align="center" gap="5px">
+            <IconButton
+              aria-label="Delete note"
+              colorPalette="red"
+              variant="plain"
+              size="sm"
+              onClick={() => onRemove?.(id)}
+            >
+              <SlTrash />
+            </IconButton>
+            {isShared && (
+              <Tag colorPalette="teal" variant="outline" size="sm">Shared</Tag>
+            )}
+          </Flex>
         </Flex>
         <ShareButton resourceId={id} type="note" />
       </Card.Header>

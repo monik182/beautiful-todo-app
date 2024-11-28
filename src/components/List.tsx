@@ -1,8 +1,8 @@
-import { Card, Container, Editable, Flex } from '@chakra-ui/react'
+import { Card, Container, Editable, Flex, IconButton } from '@chakra-ui/react'
 import { Checkbox } from './ui/checkbox'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
-import { SlBasket, SlPlus } from "react-icons/sl"
+import { SlBasket, SlPlus, SlTrash } from "react-icons/sl"
 import { ExtendedComponentProps, ListItem, ListProps } from '../types'
 import { ShareButton } from './ShareButton'
 import { useDebouncedCallback } from 'use-debounce'
@@ -14,7 +14,7 @@ const sortByChecked = (a: ListItem, b: ListItem) => {
   return 0
 }
 
-export function List({ id, title = 'New List', items, onChange, ...props }: ExtendedComponentProps<ListProps>) {
+export function List({ id, title = 'New List', items, onChange, onRemove, ...props }: ExtendedComponentProps<ListProps>) {
   const [name, setName] = useState(title)
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
   const isShared = !!props.allowedUsers?.length
@@ -90,9 +90,20 @@ export function List({ id, title = 'New List', items, onChange, ...props }: Exte
                 <Editable.Input />
               </Editable.Root>
             </Flex>
-            {isShared && (
-              <Tag colorPalette="teal" variant="outline" size="sm">Shared</Tag>
-            )}
+            <Flex align="center" gap="5px">
+              <IconButton
+                aria-label="Delete list"
+                colorPalette="red"
+                variant="plain"
+                size="sm"
+                onClick={() => onRemove?.(id)}
+              >
+                <SlTrash />
+              </IconButton>
+              {isShared && (
+                <Tag colorPalette="teal" variant="outline" size="sm">Shared</Tag>
+              )}
+            </Flex>
           </Flex>
           <ShareButton resourceId={id} type="list" />
         </Card.Header>
