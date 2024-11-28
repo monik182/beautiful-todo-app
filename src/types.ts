@@ -4,6 +4,7 @@ export interface NoteProps {
   content: string
   icon?: string
   date?: string
+  sessionId: string
 }
 
 export interface ListProps {
@@ -12,6 +13,7 @@ export interface ListProps {
   items: ListItem[]
   icon?: string
   date?: string
+  sessionId: string
 
 }
 

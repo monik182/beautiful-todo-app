@@ -1,6 +1,3 @@
-- [x] fix new note save
-- [ ] Integrate firebase
-- [x] CRUD by resource id
 - [ ] Add sync
 - [ ] Fix responsive
 - [ ] Add navigation
@@ -8,7 +5,11 @@
 - [ ] Drag and order list
 - [ ] Enter creates a new item
 - [ ] Checked move to bottom
+- [ ] Notes/List search bar
 - [ ] Add login or some sort of auth?
 - [ ] Make icon select?
 - [ ] Export as markdown/txt?
+- [x] Integrate firebase
+- [x] fix new note save
+- [x] CRUD by resource id
 - [ ]
