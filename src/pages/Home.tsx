@@ -8,8 +8,10 @@ import { ListProps, NoteProps } from '../types';
 import { List, Note } from '../components';
 import { useStorage } from '../storage';
 import { generateResourceId } from '../utils';
+import { useSessionContext } from '../SessionProvider';
 
 export function Home() {
+  const { sessionId } = useSessionContext()
   const storage = useStorage()
   const navigate = useNavigate()
   const params = useQueryParams()
@@ -22,11 +24,11 @@ export function Home() {
   }
 
   const addNewList = () => {
-    setLists([...lists, { id: generateResourceId(), title: 'New List', items: [] }])
+    setLists([...lists, { id: generateResourceId(), sessionId: sessionId!, title: 'New List', items: [] }])
   }
 
   const addNewNote = async () => {
-    const newNote = { id: generateResourceId(), title: 'New Note', content: '' }
+    const newNote = { id: generateResourceId(), sessionId: sessionId!, title: 'New Note', content: '' }
     setNotes([...notes, newNote])
     await storage.createNote({
       ...newNote,

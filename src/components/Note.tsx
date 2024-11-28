@@ -4,23 +4,39 @@ import { SlHeart } from 'react-icons/sl'
 import { NoteProps } from '../types'
 import { ShareButton } from '.'
 import { useStorage } from '../storage'
+import { useDebouncedCallback } from 'use-debounce'
 
-export function Note({ id, title = 'New Note', content }: NoteProps) {
+export function Note({ id, title = 'New Note', content, ...props }: NoteProps) {
   const storage = useStorage()
   const [name, setName] = useState(title)
   const [text, setContent] = useState(content)
 
   const handleChange = async (value: Partial<NoteProps>) => {
-    const { title, content } = value
-    if (title) setName(title)
-    if (content) setContent(content)
-    await storage.updateNote({
+    const updatedNote: Partial<NoteProps> = {
       id,
       title: name,
       content: text,
-      ...value
-    })
+      ...props,
+    }
+    const { title, content } = value
+
+    if (title != null && title !== name) {
+      setName(title)
+      updatedNote.title = title
+    }
+    if (content != null && content !== text) {
+      setContent(content)
+      updatedNote.content = content
+    }
+
+    await debounced(updatedNote as NoteProps)
   }
+
+  const handleSave = async (note: NoteProps) => {
+    await storage.updateNote(note)
+  }
+
+  const debounced = useDebouncedCallback((value) => handleSave(value), 500)
 
   return (
     <Card.Root>
@@ -29,7 +45,7 @@ export function Note({ id, title = 'New Note', content }: NoteProps) {
           <SlHeart />
           <Editable.Root
             value={name}
-            onValueChange={(e) => handleChange({title: e.value})}
+            onValueChange={(e) => handleChange({ title: e.value })}
             placeholder="Click to edit"
             maxLength={100}
           >
@@ -40,12 +56,12 @@ export function Note({ id, title = 'New Note', content }: NoteProps) {
         <ShareButton resourceId={id} type="note" />
       </Card.Header>
       <Card.Body>
-        <Textarea 
-          value={text} 
+        <Textarea
+          value={text}
           maxLength={1000}
-          variant="flushed" 
-          placeholder="Write your thoughts ❤️..." 
-          onChange={(e) => handleChange({content: e.target.value}) } 
+          variant="flushed"
+          placeholder="Write your thoughts ❤️..."
+          onChange={(e) => handleChange({ content: e.target.value })}
         />
       </Card.Body>
     </Card.Root>
