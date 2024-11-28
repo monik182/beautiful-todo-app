@@ -1,13 +1,11 @@
 import { Card, Editable, Flex, Textarea } from '@chakra-ui/react'
 import { useState } from 'react'
 import { SlHeart } from 'react-icons/sl'
-import { NoteProps } from '../types'
+import { ExtendedComponentProps, NoteProps } from '../types'
 import { ShareButton } from '.'
-import { useStorage } from '../storage'
 import { useDebouncedCallback } from 'use-debounce'
 
-export function Note({ id, title = 'New Note', content, ...props }: NoteProps) {
-  const storage = useStorage()
+export function Note({ id, title = 'New Note', content, onChange, ...props }: ExtendedComponentProps<NoteProps>) {
   const [name, setName] = useState(title)
   const [text, setContent] = useState(content)
 
@@ -29,11 +27,11 @@ export function Note({ id, title = 'New Note', content, ...props }: NoteProps) {
       updatedNote.content = content
     }
 
-    await debounced(updatedNote as NoteProps)
+    debounced(updatedNote as NoteProps)
   }
 
-  const handleSave = async (note: NoteProps) => {
-    await storage.updateNote(note)
+  const handleSave = (note: NoteProps) => {
+    onChange?.(note)
   }
 
   const debounced = useDebouncedCallback((value) => handleSave(value), 500)

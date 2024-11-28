@@ -1,4 +1,3 @@
-- [ ] Add sync
 - [ ] Fix responsive
 - [ ] Add navigation
 - [ ] Host
@@ -9,6 +8,7 @@
 - [ ] Add login or some sort of auth?
 - [ ] Make icon select?
 - [ ] Export as markdown/txt?
+- [x] Add sync
 - [x] Integrate firebase
 - [x] fix new note save
 - [x] CRUD by resource id

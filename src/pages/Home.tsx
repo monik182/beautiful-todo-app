@@ -12,7 +12,7 @@ export function Home() {
   const navigate = useNavigate()
   const params = useQueryParams()
   const { sessionId } = useSessionContext()
-  const { notes, lists, sync, createNote, createList } = useStorageManager()
+  const { notes, lists, sync, createNote, createList, updateNote } = useStorageManager()
   const currentTab = params.get('tab') || 'list'
   const [tab, setTab] = useState<string | null>('list')
 
@@ -64,7 +64,7 @@ export function Home() {
         <Button onClick={sync}>Sync</Button>
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {notes.map((props) => <Note key={props.id} {...props} />)}
+            {notes.map((props) => <Note key={props.id} {...props} onChange={updateNote} />)}
           </SimpleGrid>
           <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
             <SlPlus /> New Note
