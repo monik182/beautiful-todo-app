@@ -1,8 +1,8 @@
-- [ ] Create icon select
 - [ ] Notes/List search bar
-- [ ] Drag and order list
+- [ ] Drag and order list ?
 - [ ] Add login or some sort of auth?
 - [ ] Export as markdown/txt?
+- [X] Create icon select
 - [x] Delete list item
 - [x] Delete list 
 - [x] Delete note

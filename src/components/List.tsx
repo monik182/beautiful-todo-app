@@ -2,11 +2,12 @@ import { Card, Container, Editable, Flex, IconButton } from '@chakra-ui/react'
 import { Checkbox } from './ui/checkbox'
 import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
-import { SlBasket, SlClose, SlPlus, SlTrash } from "react-icons/sl"
 import { ExtendedComponentProps, ListItem, ListProps } from '../types'
 import { ShareButton } from './ShareButton'
 import { useDebouncedCallback } from 'use-debounce'
 import { Tag } from './ui/tag'
+import { IconPopover } from './IconPopover'
+import { SlClose, SlPlus, SlTrash } from 'react-icons/sl'
 
 const sortByChecked = (a: ListItem, b: ListItem) => {
   if (a.checked && !b.checked) return 1
@@ -16,6 +17,7 @@ const sortByChecked = (a: ListItem, b: ListItem) => {
 
 export function List({ id, title = 'New List', items, onChange, onRemove, ...props }: ExtendedComponentProps<ListProps>) {
   const [name, setName] = useState(title)
+  const [icon, setIcon] = useState(props.icon)
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
   const isShared = !!props.allowedUsers?.length
 
@@ -51,14 +53,20 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
     )
   }
 
+  const updateIcon = ({ icon }: Partial<ListProps>) => {
+    setIcon(icon)
+  }
+
   const removeItem = (id: string) => {
     setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id))
   }
 
+
   const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
 
   const handleSave = () => {
-    debounced({ id, title: name, items: checkboxes, ...props })
+    const updatedList = { id, title: name, items: checkboxes, icon, ...props }
+    debounced(updatedList)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, index: number) => {
@@ -69,7 +77,7 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
 
   useEffect(() => {
     handleSave()
-  }, [checkboxes, name])
+  }, [checkboxes, name, icon])
 
   useEffect(() => {
     if (JSON.stringify(items) !== JSON.stringify(checkboxes)) {
@@ -77,13 +85,19 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
     }
   }, [items])
 
+  useEffect(() => {
+    if (props.icon !== icon) {
+      setIcon(props.icon)
+    }
+  }, [props.icon])
+
   return (
     <Container lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
       <Card.Root lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
         <Card.Header>
           <Flex gap="1rem" justify="space-between" marginEnd="1rem">
             <Flex gap="1rem" align="center">
-              <SlBasket />
+              <IconPopover icon={props.icon} onChange={updateIcon} />
               <Editable.Root
                 value={name}
                 onValueChange={(e) => setName(e.value)}

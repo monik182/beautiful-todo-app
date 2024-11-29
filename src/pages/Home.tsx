@@ -17,7 +17,7 @@ export function Home() {
   const [tab, setTab] = useState<string | null>('list')
 
   const addNewList = () => {
-    createList({ id: generateResourceId(), sessionId: sessionId!, title: 'New List', items: [], date: new Date().toISOString() })
+    createList({ id: generateResourceId(), sessionId: sessionId!, title: 'New List', icon: 'SlBasket', items: [], date: new Date().toISOString() })
   }
 
   const addNewNote = () => {

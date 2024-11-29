@@ -1,10 +1,11 @@
 import { Card, Editable, Flex, IconButton, Textarea } from '@chakra-ui/react'
 import { useState } from 'react'
-import { SlHeart, SlTrash } from 'react-icons/sl'
+import { SlTrash } from 'react-icons/sl'
 import { ExtendedComponentProps, NoteProps } from '../types'
 import { ShareButton } from '.'
 import { useDebouncedCallback } from 'use-debounce'
 import { Tag } from './ui/tag'
+import { IconPopover } from './IconPopover'
 
 export function Note({ id, title = 'New Note', content, onChange, onRemove, ...props }: ExtendedComponentProps<NoteProps>) {
   const [name, setName] = useState(title)
@@ -18,7 +19,7 @@ export function Note({ id, title = 'New Note', content, onChange, onRemove, ...p
       content: text,
       ...props,
     }
-    const { title, content } = value
+    const { title, content, icon } = value
 
     if (title != null && title !== name) {
       setName(title)
@@ -27,6 +28,10 @@ export function Note({ id, title = 'New Note', content, onChange, onRemove, ...p
     if (content != null && content !== text) {
       setContent(content)
       updatedNote.content = content
+    }
+
+    if (icon != null && icon !== props.icon) {
+      updatedNote.icon = icon
     }
 
     debounced(updatedNote as NoteProps)
@@ -39,7 +44,7 @@ export function Note({ id, title = 'New Note', content, onChange, onRemove, ...p
       <Card.Header position="relative">
         <Flex gap="1rem" justify="space-between" marginEnd="1rem">
           <Flex gap="1rem" align="center">
-            <SlHeart />
+            <IconPopover icon={props.icon} onChange={handleChange} />
             <Editable.Root
               value={name}
               onValueChange={(e) => handleChange({ title: e.value })}
