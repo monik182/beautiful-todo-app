@@ -1,7 +1,7 @@
 import { Flex, Heading, IconButton, Link, Separator } from '@chakra-ui/react';
 import { ColorModeButton } from './ui/color-mode';
 import { SlRefresh } from 'react-icons/sl';
-import { useStorage } from '../storage';
+import { useStorage } from '../providers';
 
 export function Header() {
   const { sync, loading } = useStorage()

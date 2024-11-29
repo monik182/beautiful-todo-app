@@ -1,30 +1,21 @@
-import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, query, getDocs } from 'firebase/firestore'
+import { FirebaseApp } from 'firebase/app'
+import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, query, getDocs, Firestore, CollectionReference } from 'firebase/firestore'
 import { StorageHandler } from './StorageHandler'
 import { ListProps, NoteProps } from '../types'
 
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
-}
-
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
-
 export class FirebaseStorageHandler implements StorageHandler {
   sessionId: string
-  private notesCollection
-  private listsCollection
+  private notesCollection: CollectionReference | null = null
+  private listsCollection: CollectionReference | null = null
+  private db: Firestore | null = null
 
-  constructor(sessionId: string) {
+  constructor(sessionId: string, firebaseApp: FirebaseApp | null) {
     this.sessionId = sessionId
-    this.notesCollection = collection(db, 'notes')
-    this.listsCollection = collection(db, 'lists')
+    if (firebaseApp) {
+      this.db = getFirestore(firebaseApp)
+      this.notesCollection = collection(this.db, 'notes')
+      this.listsCollection = collection(this.db, 'lists')
+    }
   }
 
   async initialize(): Promise<void> {
@@ -33,11 +24,19 @@ export class FirebaseStorageHandler implements StorageHandler {
 
   // Notes
   async createNote(note: NoteProps): Promise<void> {
+    if (!this.notesCollection) {
+      console.error('Notes collection not initialized')
+      return
+    }
     const noteRef = doc(this.notesCollection, note.id)
     await setDoc(noteRef, note)
   }
 
   async getNote(id: string, isPublic: boolean = false): Promise<NoteProps | undefined> {
+    if (!this.notesCollection) {
+      console.error('Notes collection not initialized')
+      return
+    }
     const noteRef = doc(this.notesCollection, id)
     const docSnap = await getDoc(noteRef)
 
@@ -53,6 +52,10 @@ export class FirebaseStorageHandler implements StorageHandler {
   }
 
   async getNotes(): Promise<NoteProps[]> {
+    if (!this.notesCollection) {
+      console.error('Notes collection not initialized')
+      return []
+    }
     const notesQuery = query(this.notesCollection)
     const querySnapshot = await getDocs(notesQuery)
 
@@ -64,22 +67,38 @@ export class FirebaseStorageHandler implements StorageHandler {
   }
 
   async updateNote(note: Partial<NoteProps> & { id: string }): Promise<void> {
+    if (!this.notesCollection) {
+      console.error('Notes collection not initialized')
+      return
+    }
     const noteRef = doc(this.notesCollection, note.id)
     await setDoc(noteRef, note, { merge: true })
   }
 
   async deleteNote(id: string): Promise<void> {
+    if (!this.notesCollection) {
+      console.error('Notes collection not initialized')
+      return
+    }
     const noteRef = doc(this.notesCollection, id)
     await deleteDoc(noteRef)
   }
 
   // Lists
   async createList(list: ListProps): Promise<void> {
+    if (!this.listsCollection) {
+      console.error('Lists collection not initialized')
+      return
+    }
     const listRef = doc(this.listsCollection, list.id)
     await setDoc(listRef, list)
   }
 
   async getList(id: string, isPublic: boolean = false): Promise<ListProps | undefined> {
+    if (!this.listsCollection) {
+      console.error('Lists collection not initialized')
+      return
+    }
     const listRef = doc(this.listsCollection, id)
     const docSnap = await getDoc(listRef)
 
@@ -95,6 +114,10 @@ export class FirebaseStorageHandler implements StorageHandler {
   }
 
   async getLists(): Promise<ListProps[]> {
+    if (!this.listsCollection) {
+      console.error('Lists collection not initialized')
+      return []
+    }
     const listsQuery = query(this.listsCollection)
     const querySnapshot = await getDocs(listsQuery)
 
@@ -106,11 +129,19 @@ export class FirebaseStorageHandler implements StorageHandler {
   }
 
   async updateList(list: Partial<ListProps> & { id: string }): Promise<void> {
+    if (!this.listsCollection) {
+      console.error('Lists collection not initialized')
+      return
+    }
     const listRef = doc(this.listsCollection, list.id)
     await setDoc(listRef, list, { merge: true })
   }
 
   async deleteList(id: string): Promise<void> {
+    if (!this.listsCollection) {
+      console.error('Lists collection not initialized')
+      return
+    }
     const listRef = doc(this.listsCollection, id)
     await deleteDoc(listRef)
   }

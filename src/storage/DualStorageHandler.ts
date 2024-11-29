@@ -2,16 +2,17 @@ import { IndexedDBHandler } from './IndexedDBHandler'
 import { FirebaseStorageHandler } from './FirebaseStorageHandler'
 import { StorageHandler } from './StorageHandler'
 import { ListProps, NoteProps } from '../types'
+import { FirebaseApp } from 'firebase/app'
 
 export class DualStorageHandler implements StorageHandler {
   sessionId: string
   private indexedDBHandler: IndexedDBHandler
   private firebaseHandler: FirebaseStorageHandler
 
-  constructor(sessionId: string) {
+  constructor(sessionId: string, firebaseApp: FirebaseApp | null) {
     this.sessionId = sessionId
     this.indexedDBHandler = new IndexedDBHandler(sessionId)
-    this.firebaseHandler = new FirebaseStorageHandler(sessionId)
+    this.firebaseHandler = new FirebaseStorageHandler(sessionId, firebaseApp)
   }
 
   async initialize(): Promise<void> {

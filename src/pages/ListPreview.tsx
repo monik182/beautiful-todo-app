@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react'
 import { List } from '../components'
 import { useQueryParams } from '../hooks/useQueryParams'
 import { ListProps } from '../types'
-import { useStorage } from '../storage'
+import { useStorage, useSessionContext } from '../providers'
 import { SlList } from 'react-icons/sl'
 import { EmptyState } from '../components/ui/empty-state'
 import { Button, Flex, Link } from '@chakra-ui/react'
-import { useSessionContext } from '../SessionProvider'
 import { Alert } from '../components/ui/alert'
 
 export function ListPreview() {

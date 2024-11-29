@@ -1,12 +1,11 @@
 import React from 'react'
 import './App.css'
 import { Provider } from './components/ui/provider'
-import { SessionProvider, useSessionContext } from './SessionProvider'
+import { SessionProvider, useSessionContext, FirebaseAppProvider, StorageProvider } from './providers'
 import { Layout } from './Layout'
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { Home, NotePreview } from './pages'
 import { Center, Flex, Spinner, VStack, Text } from '@chakra-ui/react'
-import { StorageProvider } from './storage'
 import { ListPreview } from './pages/ListPreview'
 
 function AppContent() {
@@ -26,15 +25,17 @@ function AppContent() {
   }
 
   return (
-    <StorageProvider sessionId={sessionId}>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/note" element={<NotePreview />} />
-          <Route path="/list" element={<ListPreview />} />
-        </Routes>
-      </Layout>
-    </StorageProvider>
+    <FirebaseAppProvider>
+      <StorageProvider sessionId={sessionId}>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/note" element={<NotePreview />} />
+            <Route path="/list" element={<ListPreview />} />
+          </Routes>
+        </Layout>
+      </StorageProvider>
+    </FirebaseAppProvider>
   )
 }
 

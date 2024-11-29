@@ -5,9 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useQueryParams } from '../hooks/useQueryParams'
 import { List, Note } from '../components'
-import { generateResourceId } from '../storage/utils/utils'
-import { useSessionContext } from '../SessionProvider'
-import { useStorage } from '../storage'
+import { generateResourceId } from '../utils'
+import { useSessionContext, useStorage } from '../providers'
 
 export function Home() {
   const navigate = useNavigate()

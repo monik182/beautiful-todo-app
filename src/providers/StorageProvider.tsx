@@ -1,8 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { StorageHandler } from './StorageHandler'
-import { DualStorageHandler } from './DualStorageHandler'
+import { notifyError, notifySuccess, StorageHandler, DualStorageHandler } from '../storage'
 import { ListProps, NoteProps } from '../types'
-import { notifyError, notifySuccess } from './utils'
+import { useFirebaseApp } from './FirebaseAppProvider'
 
 interface StorageContextType extends StorageHandler {
   notes: NoteProps[]
@@ -13,6 +12,7 @@ interface StorageContextType extends StorageHandler {
 const StorageContext = createContext<StorageContextType | undefined>(undefined)
 
 export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolean; children: React.ReactNode }> = ({ sessionId, useFirebase = true, children }) => {
+  const firebaseApp = useFirebaseApp()
   const [handler, setHandler] = useState<StorageHandler | null>(null)
   const [notes, setNotes] = useState<NoteProps[]>([])
   const [lists, setLists] = useState<ListProps[]>([])
@@ -20,7 +20,7 @@ export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolea
 
   useEffect(() => {
     const initHandler = async () => {
-      const storageHandler = new DualStorageHandler(sessionId)
+      const storageHandler = new DualStorageHandler(sessionId, firebaseApp)
       await storageHandler.initialize()
       setHandler(storageHandler)
     }
