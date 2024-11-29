@@ -1,7 +1,8 @@
-- [ ] Notes/List search bar
 - [ ] Set firebase rules
-- [ ] Add login or some sort of auth?
+- [ ] Add login or some sort of auth/on user creation associates local notes to user
+- [ ] Add analytics
 - [ ] Fix github actions
+- [x] Notes/List search bar
 - [ ] 
 
 

@@ -11,6 +11,7 @@ export function Note({ id, title = 'New Note', content, onChange, onRemove, ...p
   const [name, setName] = useState(title)
   const [text, setContent] = useState(content)
   const isShared = !!props.allowedUsers?.length
+  const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
 
   const handleChange = async (value: Partial<NoteProps>) => {
     const updatedNote: Partial<NoteProps> = {
@@ -36,8 +37,6 @@ export function Note({ id, title = 'New Note', content, onChange, onRemove, ...p
 
     debounced(updatedNote as NoteProps)
   }
-
-  const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
 
   return (
     <Card.Root lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>

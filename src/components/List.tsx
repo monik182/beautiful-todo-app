@@ -17,56 +17,54 @@ const sortByChecked = (a: ListItem, b: ListItem) => {
 
 export function List({ id, title = 'New List', items, onChange, onRemove, ...props }: ExtendedComponentProps<ListProps>) {
   const [name, setName] = useState(title)
-  const [icon, setIcon] = useState(props.icon)
   const [checkboxes, setCheckboxes] = useState<ListItem[]>(items)
   const isShared = !!props.allowedUsers?.length
+  const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
+
+  const handleChange = async (value: Partial<ListProps>) => {
+    const updatedList: Partial<ListProps> = {
+      id,
+      title: name,
+      items: checkboxes,
+      ...props,
+    }
+    const { title, icon, items } = value
+
+    if (title != null && title !== name) {
+      setName(title)
+      updatedList.title = title
+    }
+
+    if (items != null && JSON.stringify(items) !== JSON.stringify(checkboxes)) {
+      updatedList.items = items
+    }
+
+    if (icon != null && icon !== props.icon) {
+      updatedList.icon = icon
+    }
+
+    debounced(updatedList as ListProps)
+  }
 
   const addCheckbox = (pos?: number) => {
+    let updatedCheckboxes
+
     if (pos !== undefined) {
       const newId = (checkboxes.length + 1).toString()
-      setCheckboxes([
+      updatedCheckboxes = [
         ...checkboxes.slice(0, pos + 1),
         { id: newId, content: '', checked: false },
         ...checkboxes.slice(pos + 1),
-      ])
-      return
+      ]
+    } else {
+      updatedCheckboxes = [
+        ...checkboxes,
+        { id: (checkboxes.length + 1).toString(), content: '', checked: false },
+      ]
     }
-    setCheckboxes([
-      ...checkboxes,
-      { id: (checkboxes.length + 1).toString(), content: '', checked: false },
-    ])
-  }
 
-  const toggleCheckbox = (id: string) => {
-    setCheckboxes(
-      checkboxes.map((checkbox) =>
-        checkbox.id === id ? { ...checkbox, checked: !checkbox.checked } : checkbox
-      ).sort(sortByChecked)
-    )
-  }
-
-  const updateCheckbox = (id: string, content: string) => {
-    setCheckboxes(
-      checkboxes.map((checkbox) =>
-        checkbox.id === id ? { ...checkbox, content } : checkbox
-      ).sort(sortByChecked)
-    )
-  }
-
-  const updateIcon = ({ icon }: Partial<ListProps>) => {
-    setIcon(icon)
-  }
-
-  const removeItem = (id: string) => {
-    setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id))
-  }
-
-
-  const debounced = useDebouncedCallback((value) => onChange?.(value), 500)
-
-  const handleSave = () => {
-    const updatedList = { id, title: name, items: checkboxes, icon, ...props }
-    debounced(updatedList)
+    setCheckboxes(updatedCheckboxes)
+    handleChange({ items: updatedCheckboxes })
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, index: number) => {
@@ -75,9 +73,27 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
     }
   }
 
-  useEffect(() => {
-    handleSave()
-  }, [checkboxes, name, icon])
+  const toggleCheckbox = (id: string) => {
+    const updatedCheckboxes = checkboxes.map((checkbox) =>
+      checkbox.id === id ? { ...checkbox, checked: !checkbox.checked } : checkbox
+    ).sort(sortByChecked)
+    setCheckboxes(updatedCheckboxes)
+    handleChange({ items: updatedCheckboxes })
+  }
+
+  const updateCheckboxContent = (id: string, content: string) => {
+    const updatedCheckboxes = checkboxes.map((checkbox) =>
+      checkbox.id === id ? { ...checkbox, content } : checkbox
+    ).sort(sortByChecked)
+    setCheckboxes(updatedCheckboxes)
+    handleChange({ items: updatedCheckboxes })
+  }
+
+  const removeItem = (id: string) => {
+    let updatedCheckboxes = checkboxes.filter((checkbox) => checkbox.id !== id)
+    setCheckboxes(updatedCheckboxes)
+    handleChange({ items: updatedCheckboxes })
+  }
 
   useEffect(() => {
     if (JSON.stringify(items) !== JSON.stringify(checkboxes)) {
@@ -85,22 +101,16 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
     }
   }, [items])
 
-  useEffect(() => {
-    if (props.icon !== icon) {
-      setIcon(props.icon)
-    }
-  }, [props.icon])
-
   return (
     <Container lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
       <Card.Root lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
         <Card.Header>
           <Flex gap="1rem" justify="space-between" marginEnd="1rem">
             <Flex gap="1rem" align="center">
-              <IconPopover icon={props.icon} onChange={updateIcon} />
+              <IconPopover icon={props.icon} onChange={handleChange} />
               <Editable.Root
                 value={name}
-                onValueChange={(e) => setName(e.value)}
+                onValueChange={(e) => handleChange({ title: e.value })}
                 placeholder="Click to edit"
                 maxLength={100}
               >
@@ -139,7 +149,7 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
                 />
                 <Editable.Root
                   value={checkbox.content}
-                  onValueChange={(e) => updateCheckbox(checkbox.id, e.value)}
+                  onValueChange={(e) => updateCheckboxContent(checkbox.id, e.value)}
                   placeholder="Click to edit"
                   onKeyDown={(e) => handleKeyDown(e, index)}
                 >
