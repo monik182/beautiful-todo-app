@@ -54,20 +54,20 @@ export function Home() {
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
             {lists.map((props) => <List key={props.id} {...props} onChange={updateList} onRemove={isOwner(props.sessionId) ? deleteList : undefined} />)}
+            <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
+              <SlPlus /> New List
+            </Button>
           </SimpleGrid>
-          <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
-            <SlPlus /> New List
-          </Button>
         </Flex>
       </Tabs.Content>
       <Tabs.Content value="notes">
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
             {notes.map((props) => <Note key={props.id} {...props} onChange={updateNote} onRemove={isOwner(props.sessionId) ? deleteNote : undefined} />)}
+            <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
+              <SlPlus /> New Note
+            </Button>
           </SimpleGrid>
-          <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
-            <SlPlus /> New Note
-          </Button>
         </Flex>
       </Tabs.Content>
     </Tabs.Root>

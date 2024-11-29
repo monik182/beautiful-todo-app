@@ -1,6 +1,55 @@
 - [ ] Notes/List search bar
-- [ ] Drag and order list ?
+- [ ] Set firebase rules
 - [ ] Add login or some sort of auth?
+- [ ] Fix github actions
+- [ ] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- [ ] Drag and order list ?
 - [ ] Export as markdown/txt?
 - [X] Create icon select
 - [x] Delete list item
@@ -21,4 +70,3 @@
 - [x] Integrate firebase
 - [x] fix new note save
 - [x] CRUD by resource id
-- [ ]
