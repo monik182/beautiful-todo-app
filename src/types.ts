@@ -7,6 +7,7 @@ export interface NoteProps {
   uid?: string
   sessionId: string
   allowedUsers?: string[]
+  order: number
 }
 
 export interface ListProps {
@@ -18,6 +19,7 @@ export interface ListProps {
   uid?: string
   sessionId: string
   allowedUsers?: string[]
+  order: number
 }
 
 export interface ListItem {

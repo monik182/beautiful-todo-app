@@ -8,12 +8,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { Tag } from './ui/tag'
 import { IconPopover } from './IconPopover'
 import { SlClose, SlPlus, SlTrash } from 'react-icons/sl'
-
-const sortByChecked = (a: ListItem, b: ListItem) => {
-  if (a.checked && !b.checked) return 1
-  if (!a.checked && b.checked) return -1
-  return 0
-}
+import { sortByChecked } from '../utils'
 
 export function List({ id, title = 'New List', items, onChange, onRemove, ...props }: ExtendedComponentProps<ListProps>) {
   const [name, setName] = useState(title)
@@ -48,9 +43,9 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
 
   const addCheckbox = (pos?: number) => {
     let updatedCheckboxes
+    const newId = (checkboxes.length + 1).toString()
 
     if (pos !== undefined) {
-      const newId = (checkboxes.length + 1).toString()
       updatedCheckboxes = [
         ...checkboxes.slice(0, pos + 1),
         { id: newId, content: '', checked: false },
@@ -59,7 +54,7 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
     } else {
       updatedCheckboxes = [
         ...checkboxes,
-        { id: (checkboxes.length + 1).toString(), content: '', checked: false },
+        { id: newId, content: '', checked: false },
       ]
     }
 
@@ -106,7 +101,7 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
       <Card.Root lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
         <Card.Header>
           <Flex gap="1rem" justify="space-between" marginEnd="1rem">
-            <Flex gap="1rem" align="center">
+            <Flex gap="1rem" align="center" flex="1">
               <IconPopover icon={props.icon} onChange={handleChange} />
               <Editable.Root
                 value={name}
@@ -152,6 +147,7 @@ export function List({ id, title = 'New List', items, onChange, onRemove, ...pro
                   onValueChange={(e) => updateCheckboxContent(checkbox.id, e.value)}
                   placeholder="Click to edit"
                   onKeyDown={(e) => handleKeyDown(e, index)}
+                  defaultEdit
                 >
                   <Editable.Preview />
                   <Editable.Input />

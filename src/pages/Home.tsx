@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useQueryParams } from '../hooks/useQueryParams'
 import { List, Note } from '../components'
-import { generateResourceId } from '../utils'
+import { generateResourceId, sortByORder } from '../utils'
 import { useSessionContext, useStorage } from '../providers'
 
 export function Home() {
@@ -23,11 +23,13 @@ export function Home() {
   }
 
   const addNewList = () => {
-    createList({ id: generateResourceId(), sessionId: sessionId!, title: 'New List', icon: 'SlBasket', items: [], date: new Date().toISOString() })
+    const listLength = lists.length
+    createList({ id: generateResourceId(), sessionId: sessionId!, title: 'New List', icon: 'SlBasket', items: [], order: listLength + 1, date: new Date().toISOString() })
   }
 
   const addNewNote = () => {
-    createNote({ id: generateResourceId(), sessionId: sessionId!, title: 'New Note', content: '', date: new Date().toISOString() })
+    const noteLength = notes.length
+    createNote({ id: generateResourceId(), sessionId: sessionId!, title: 'New Note', content: '', order: noteLength + 1, date: new Date().toISOString() })
   }
 
   const handleTabChange = (tab: string) => {
@@ -59,11 +61,11 @@ export function Home() {
   }, [currentTab, navigate])
 
   useEffect(() => {
-    setFilteredLists(lists)
+    setFilteredLists(lists.sort(sortByORder))
   }, [lists])
 
   useEffect(() => {
-    setFilteredNotes(notes)
+    setFilteredNotes(notes.sort(sortByORder))
   }, [notes])
 
   return (

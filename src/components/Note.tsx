@@ -42,7 +42,7 @@ export function Note({ id, title = 'New Note', content, onChange, onRemove, ...p
     <Card.Root lg={{ maxHeight: 500 }} sm={{ maxHeight: 300 }}>
       <Card.Header position="relative">
         <Flex gap="1rem" justify="space-between" marginEnd="1rem">
-          <Flex gap="1rem" align="center">
+          <Flex gap="1rem" align="center" flex="1">
             <IconPopover icon={props.icon} onChange={handleChange} />
             <Editable.Root
               value={name}
