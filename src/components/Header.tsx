@@ -1,11 +1,12 @@
 import { Flex, Heading, IconButton, Link, Separator } from '@chakra-ui/react';
 import { ColorModeButton } from './ui/color-mode';
 import { SlRefresh } from 'react-icons/sl';
-import { useStorage } from '../providers';
+import { useAuth, useStorage } from '../providers';
 import { AuthButton } from './AuthButton';
 import { notifySuccess } from '../utils';
 
 export function Header() {
+  const { user } = useAuth()
   const { sync, loading } = useStorage()
 
   const handleSync = async () => {
@@ -28,9 +29,11 @@ export function Header() {
         </Flex>
         <Flex gap="5px" align="center">
           <AuthButton />
-          <IconButton onClick={handleSync} variant="ghost" aria-label="Sync" disabled={loading}>
-            <SlRefresh />
-          </IconButton>
+          {!!user?.uid  && (
+            <IconButton onClick={handleSync} variant="ghost" aria-label="Sync" disabled={loading}>
+              <SlRefresh />
+            </IconButton>
+          )}
           <ColorModeButton />
         </Flex>
       </Flex>

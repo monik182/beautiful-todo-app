@@ -58,9 +58,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (storagedUser) {
       setUser(JSON.parse(storagedUser))
     } else {
-      if (!user) {
-        signInAnonymous()
-      }
     }
   }, [storagedUser])
 

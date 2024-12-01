@@ -1,9 +1,9 @@
-- [ ] Sync every xs minutes
-- [ ] Set firebase rules
 - [ ] Add analytics
 - [ ] Fix github actions
+- [X] Set firebase rules
 - [x] Add login or some sort of auth/on user creation associates local notes to user
 - [x] Notes/List search bar
+- [-] Sync every xs minutes [Nope]
 - [ ] 
 
 

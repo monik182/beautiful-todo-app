@@ -3,6 +3,7 @@ import { notifyError, notifySuccess, StorageHandler, DualStorageHandler } from '
 import { ListProps, NoteProps } from '../types'
 import { useFirebaseApp } from './FirebaseAppProvider'
 import { useAuth } from './AuthProvider'
+import { IndexedDBHandler } from '../storage/IndexedDBHandler'
 
 interface StorageContextType extends StorageHandler {
   notes: NoteProps[]
@@ -29,7 +30,7 @@ export const StorageProvider: React.FC<StorageProviderProps> = ({ sessionId, use
 
   useEffect(() => {
     const initHandler = async () => {
-      const storageHandler = new DualStorageHandler(sessionId, firebaseApp, uid)
+      const storageHandler = !uid ? new IndexedDBHandler(sessionId, uid) : new DualStorageHandler(sessionId, firebaseApp, uid)
       await storageHandler.initialize()
       setHandler(storageHandler)
     }
@@ -229,7 +230,7 @@ export const StorageProvider: React.FC<StorageProviderProps> = ({ sessionId, use
     fetchData()
   }, [fetchNotes, fetchLists])
 
-  useEffect(() => { 
+  useEffect(() => {
     const syncOnLogin = async () => {
       await loginSync()
       await sync()
