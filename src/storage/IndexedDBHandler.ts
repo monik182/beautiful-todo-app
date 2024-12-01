@@ -49,6 +49,9 @@ export class IndexedDBHandler implements StorageHandler {
 
   async getNote(id: string, isPublic = false): Promise<NoteProps | undefined> {
     const note = await this.db.get("notes", id)
+    if (!note) {
+      return undefined
+    }
     if (isPublic) {
       return note
     }
@@ -82,6 +85,9 @@ export class IndexedDBHandler implements StorageHandler {
 
   async getList(id: string, isPublic = false): Promise<ListProps | undefined> {
     const list = await this.db.get("lists", id)
+    if (!list) {
+      return undefined
+    }
     if (isPublic) {
       return list
     }
