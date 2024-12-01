@@ -1,5 +1,5 @@
-- [ ] Fix github actions
 - [ ] Drag and order list ?
+- [x] Fix github actions
 - [-] Add analytics [Nope]
 - [X] Set firebase rules
 - [x] Add login or some sort of auth/on user creation associates local notes to user
