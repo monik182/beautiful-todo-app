@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { notifyError, notifySuccess, StorageHandler, DualStorageHandler } from '../storage'
 import { ListProps, NoteProps } from '../types'
 import { useFirebaseApp } from './FirebaseAppProvider'
+import { useAuth } from './AuthProvider'
 
 interface StorageContextType extends StorageHandler {
   notes: NoteProps[]
@@ -11,8 +12,16 @@ interface StorageContextType extends StorageHandler {
 
 const StorageContext = createContext<StorageContextType | undefined>(undefined)
 
-export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolean; children: React.ReactNode }> = ({ sessionId, useFirebase = true, children }) => {
+interface StorageProviderProps {
+  uid?: string
+  sessionId: string
+  useFirebase?: boolean
+  children: React.ReactNode
+}
+
+export const StorageProvider: React.FC<StorageProviderProps> = ({ sessionId, useFirebase = true, uid, children }) => {
   const firebaseApp = useFirebaseApp()
+  const { user } = useAuth()
   const [handler, setHandler] = useState<StorageHandler | null>(null)
   const [notes, setNotes] = useState<NoteProps[]>([])
   const [lists, setLists] = useState<ListProps[]>([])
@@ -20,12 +29,12 @@ export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolea
 
   useEffect(() => {
     const initHandler = async () => {
-      const storageHandler = new DualStorageHandler(sessionId, firebaseApp)
+      const storageHandler = new DualStorageHandler(sessionId, firebaseApp, uid)
       await storageHandler.initialize()
       setHandler(storageHandler)
     }
     initHandler()
-  }, [sessionId])
+  }, [sessionId, uid])
 
   const fetchNotes = useCallback(async () => {
     try {
@@ -51,7 +60,20 @@ export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolea
       await handler?.sync?.()
       await fetchLists()
       await fetchNotes()
-      notifySuccess('Synced Successfully')
+    } catch (error) {
+      console.error('Error syncing:', error)
+      notifyError('Error syncing')
+    } finally {
+      setLoading(false)
+    }
+  }, [fetchLists, fetchNotes, handler])
+
+  const loginSync = useCallback(async (uid?: string) => {
+    try {
+      setLoading(true)
+      await handler?.loginSync?.(uid)
+      await fetchLists()
+      await fetchNotes()
     } catch (error) {
       console.error('Error syncing:', error)
       notifyError('Error syncing')
@@ -184,6 +206,19 @@ export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolea
     [handler, fetchLists]
   )
 
+  const clear = useCallback(async () => {
+    try {
+      setLoading(true)
+      await handler?.clear?.()
+      setNotes([])
+      setLists([])
+    } catch (error) {
+      console.error('Error clearing storage:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [handler])
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
@@ -194,10 +229,20 @@ export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolea
     fetchData()
   }, [fetchNotes, fetchLists])
 
+  useEffect(() => { 
+    const syncOnLogin = async () => {
+      await loginSync()
+      await sync()
+    }
+    if (user?.uid && handler?.hasUid?.()) {
+      syncOnLogin()
+    }
+  }, [user, handler])
+
   if (!handler) {
     return (
       <div>
-        <p>Loading handler?...</p>
+        <p>Loading handler...</p>
       </div>
     )
   }
@@ -210,6 +255,7 @@ export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolea
     fetchNotes,
     fetchLists,
     sync,
+    loginSync,
     getNote,
     getList,
     createNote,
@@ -218,6 +264,7 @@ export const StorageProvider: React.FC<{ sessionId: string; useFirebase?: boolea
     createList,
     updateList,
     deleteList,
+    clear,
   }
 
   return <StorageContext.Provider value={value}>{children}</StorageContext.Provider>

@@ -1,14 +1,18 @@
+- [ ] Sync every xs minutes
 - [ ] Set firebase rules
-- [ ] Add login or some sort of auth/on user creation associates local notes to user
 - [ ] Add analytics
 - [ ] Fix github actions
+- [x] Add login or some sort of auth/on user creation associates local notes to user
 - [x] Notes/List search bar
 - [ ] 
 
 
 
 
-
+On log in
+check firebase for the user
+if it does not exist, then create the user and associate the session id
+if it does exist, then sync 
 
 
 

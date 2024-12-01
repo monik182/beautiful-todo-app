@@ -4,6 +4,7 @@ export interface NoteProps {
   content: string
   icon?: string
   date?: string
+  uid?: string
   sessionId: string
   allowedUsers?: string[]
 }
@@ -14,6 +15,7 @@ export interface ListProps {
   items: ListItem[]
   icon?: string
   date?: string
+  uid?: string
   sessionId: string
   allowedUsers?: string[]
 }

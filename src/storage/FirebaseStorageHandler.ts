@@ -4,13 +4,15 @@ import { StorageHandler } from './StorageHandler'
 import { ListProps, NoteProps } from '../types'
 
 export class FirebaseStorageHandler implements StorageHandler {
+  uid?: string
   sessionId: string
   private notesCollection: CollectionReference | null = null
   private listsCollection: CollectionReference | null = null
   private db: Firestore | null = null
 
-  constructor(sessionId: string, firebaseApp: FirebaseApp | null) {
+  constructor(sessionId: string, firebaseApp: FirebaseApp | null, uid?: string) {
     this.sessionId = sessionId
+    this.uid = uid
     if (firebaseApp) {
       this.db = getFirestore(firebaseApp)
       this.notesCollection = collection(this.db, 'notes')
@@ -18,8 +20,19 @@ export class FirebaseStorageHandler implements StorageHandler {
     }
   }
 
+  private canAccess(resourceSessionId: string, resourceUID?: string) {
+    if (resourceUID) {
+      return resourceUID === this.uid
+    }
+    return resourceSessionId === this.sessionId
+  }
+
+  private isAllowedUser(resourceAllowedUsers: string[] = []) {
+    return (this.uid && resourceAllowedUsers.includes(this.uid)) || resourceAllowedUsers.includes(this.sessionId)
+  }
+
   async initialize(): Promise<void> {
-    console.log(`FirebaseStorageHandler initialized for session: ${this.sessionId}`)
+    console.log(`FirebaseStorageHandler initialized for session: ${this.sessionId} and uid: ${this.uid}`)
   }
 
   // Notes
@@ -45,7 +58,7 @@ export class FirebaseStorageHandler implements StorageHandler {
       if (isPublic) {
         return note
       }
-      const canAccessNote = note.sessionId === this.sessionId || (note.allowedUsers && note.allowedUsers.includes(this.sessionId))
+      const canAccessNote = this.canAccess(note.sessionId, note.uid) || this.isAllowedUser(note.allowedUsers)
       return canAccessNote ? note : undefined
     }
     return undefined
@@ -63,7 +76,7 @@ export class FirebaseStorageHandler implements StorageHandler {
       id: doc.id,
       ...doc.data(),
     })) as NoteProps[]
-    return result?.filter((note) => note.sessionId === this.sessionId || (note.allowedUsers && note.allowedUsers.includes(this.sessionId)))
+    return result?.filter((note) => this.canAccess(note.sessionId, note.uid) || this.isAllowedUser(note.allowedUsers))
   }
 
   async updateNote(note: Partial<NoteProps> & { id: string }): Promise<void> {
@@ -107,7 +120,7 @@ export class FirebaseStorageHandler implements StorageHandler {
       if (isPublic) {
         return list
       }
-      const canAccessList = list.sessionId === this.sessionId || (list.allowedUsers && list.allowedUsers.includes(this.sessionId))
+      const canAccessList = this.canAccess(list.sessionId, list.uid) || this.isAllowedUser(list.allowedUsers)
       return canAccessList ? list : undefined
     }
     return undefined
@@ -125,7 +138,7 @@ export class FirebaseStorageHandler implements StorageHandler {
       id: doc.id,
       ...doc.data(),
     })) as ListProps[]
-    return result?.filter((list) => list.sessionId === this.sessionId || (list.allowedUsers && list.allowedUsers.includes(this.sessionId)))
+    return result?.filter((list) => this.canAccess(list.sessionId, list.uid) || this.isAllowedUser(list.allowedUsers))
   }
 
   async updateList(list: Partial<ListProps> & { id: string }): Promise<void> {
@@ -144,6 +157,10 @@ export class FirebaseStorageHandler implements StorageHandler {
     }
     const listRef = doc(this.listsCollection, id)
     await deleteDoc(listRef)
+  }
+
+  async clear(): Promise<void> {
+    return Promise.resolve()
   }
 
 }

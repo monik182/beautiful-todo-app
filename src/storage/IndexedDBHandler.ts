@@ -9,8 +9,10 @@ export class IndexedDBHandler implements StorageHandler {
   private db: IDBPDatabase
   private dbPromise: Promise<IDBPDatabase>
   sessionId: string
+  uid?: string
 
-  constructor(sessionId: string) {
+  constructor(sessionId: string, uid?: string) {
+    this.uid = uid
     this.sessionId = sessionId
     this.dbPromise = openDB(DB_NAME, DB_VERSION, {
       upgrade(db) {
@@ -29,6 +31,17 @@ export class IndexedDBHandler implements StorageHandler {
     this.db = await this.dbPromise
   }
 
+  private canAccess(resourceSessionId: string, resourceUID?: string) {
+    if (resourceUID) {
+      return resourceUID === this.uid
+    }
+    return resourceSessionId === this.sessionId
+  }
+
+  private isAllowedUser(resourceAllowedUsers: string[] = []) {
+    return (this.uid && resourceAllowedUsers.includes(this.uid)) || resourceAllowedUsers.includes(this.sessionId)
+  }
+
   // Note CRUD
   async createNote(note: NoteProps): Promise<void> {
     await this.db.put("notes", note)
@@ -39,13 +52,13 @@ export class IndexedDBHandler implements StorageHandler {
     if (isPublic) {
       return note
     }
-    const canAccessNote = note?.sessionId === this.sessionId || (note?.allowedUsers && note.allowedUsers.includes(this.sessionId))
+    const canAccessNote = this.canAccess(note.sessionId, note.uid) || this.isAllowedUser(note.allowedUsers)
     return canAccessNote ? note : undefined
   }
 
   async getNotes(): Promise<NoteProps[]> {
     const notes = await this.db.getAll("notes")
-    return notes.filter((note) => note.sessionId === this.sessionId || (note.allowedUsers && note.allowedUsers.includes(this.sessionId)))
+    return notes.filter((note) => this.canAccess(note.sessionId, note.uid) || this.isAllowedUser(note.allowedUsers))
   }
 
   async updateNote(note: NoteProps): Promise<void> {
@@ -72,13 +85,13 @@ export class IndexedDBHandler implements StorageHandler {
     if (isPublic) {
       return list
     }
-    const canAccessList = list?.sessionId === this.sessionId || (list?.allowedUsers && list.allowedUsers.includes(this.sessionId))
+    const canAccessList = this.canAccess(list.sessionId, list.uid) || this.isAllowedUser(list.allowedUsers)
     return canAccessList ? list : undefined
   }
 
   async getLists(): Promise<ListProps[]> {
     const lists = await this.db.getAll("lists")
-    return lists.filter((list) => list.sessionId === this.sessionId || (list.allowedUsers && list.allowedUsers.includes(this.sessionId)))
+    return lists.filter((list) => this.canAccess(list.sessionId, list.uid) || this.isAllowedUser(list.allowedUsers))
   }
 
   async updateList(list: ListProps): Promise<void> {
@@ -93,5 +106,10 @@ export class IndexedDBHandler implements StorageHandler {
     if (existingList) {
       await this.db.delete("lists", id)
     }
+  }
+
+  async clear() {
+    await this.db.clear("notes")
+    await this.db.clear("lists")
   }
 }

@@ -5,14 +5,16 @@ import { ListProps, NoteProps } from '../types'
 import { FirebaseApp } from 'firebase/app'
 
 export class DualStorageHandler implements StorageHandler {
+  uid?: string
   sessionId: string
   private indexedDBHandler: IndexedDBHandler
   private firebaseHandler: FirebaseStorageHandler
 
-  constructor(sessionId: string, firebaseApp: FirebaseApp | null) {
+  constructor(sessionId: string, firebaseApp: FirebaseApp | null, uid?: string) {
     this.sessionId = sessionId
-    this.indexedDBHandler = new IndexedDBHandler(sessionId)
-    this.firebaseHandler = new FirebaseStorageHandler(sessionId, firebaseApp)
+    this.indexedDBHandler = new IndexedDBHandler(sessionId, uid)
+    this.firebaseHandler = new FirebaseStorageHandler(sessionId, firebaseApp, uid)
+    this.uid = uid
   }
 
   async initialize(): Promise<void> {
@@ -45,6 +47,7 @@ export class DualStorageHandler implements StorageHandler {
     // Sync Lists
     const localLists = await this.indexedDBHandler.getLists()
     const remoteLists = await this.firebaseHandler.getLists()
+
     const localMap = new Map(localLists.map((list) => [list.id, list]))
 
     // Sync remote lists to local
@@ -62,6 +65,23 @@ export class DualStorageHandler implements StorageHandler {
     // Sync local lists to remote
     for (const localList of localMap.values()) {
       await this.firebaseHandler.createList(localList)
+    }
+  }
+
+  async loginSync(): Promise<void> {
+    const localNotes = await this.indexedDBHandler.getNotes()
+    const localLists = await this.indexedDBHandler.getLists()
+
+    for (const note of localNotes) {
+      const updatedNote = { ...note, uid: this.uid }
+      await this.firebaseHandler.updateNote(updatedNote)
+      await this.indexedDBHandler.updateNote(updatedNote)
+    }
+
+    for (const list of localLists) {
+      const updatedList = { ...list, uid: this.uid }
+      await this.firebaseHandler.updateList(updatedList)
+      await this.indexedDBHandler.updateList(updatedList)
     }
   }
 
@@ -131,5 +151,16 @@ export class DualStorageHandler implements StorageHandler {
       this.indexedDBHandler.deleteList(id),
       this.firebaseHandler.deleteList(id),
     ])
+  }
+
+  async clear(): Promise<void> {
+    await Promise.all([
+      this.indexedDBHandler.clear(),
+      this.firebaseHandler.clear(),
+    ])
+  }
+
+  hasUid(): boolean {
+    return !!this.uid
   }
 }
