@@ -62,12 +62,10 @@ export function Home() {
   }, [currentTab, navigate])
 
   useEffect(() => {
-    console.log('lists', lists.map((list) => list.uid))
     setFilteredLists(lists.sort(sortByORder))
   }, [lists])
 
   useEffect(() => {
-    // console.log('notes', notes.map((note) => note.uid))
     setFilteredNotes(notes.sort(sortByORder))
   }, [notes])
 
