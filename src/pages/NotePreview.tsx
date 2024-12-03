@@ -26,7 +26,7 @@ export function NotePreview() {
     if (!note || !sessionId || note.sessionId === sessionId) return
     const allowedUsers = note?.allowedUsers || []
     try {
-      const updatedNote = { ...note, date: new Date().toISOString(), allowedUsers: [...allowedUsers, (user?.uid || sessionId)] }
+      const updatedNote = { ...note, allowedUsers: [...allowedUsers, (user?.uid || sessionId)] }
       updateNote(updatedNote)
       setNote(updatedNote)
       notifySuccess('Note added to your notes')

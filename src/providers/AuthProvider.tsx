@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await signOut(auth)
       setUser(null)
+      localStorage.removeItem('user')
     } catch (error) {
       console.error('Error signing out:', error)
     }
@@ -57,7 +58,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (storagedUser) {
       setUser(JSON.parse(storagedUser))
-    } else {
     }
   }, [storagedUser])
 

@@ -24,47 +24,45 @@ export class DualStorageHandler implements StorageHandler {
     ])
   }
 
-  // Sync function to synchronize local IndexedDB and Firebase
   async sync(): Promise<void> {
-    // Sync Notes
-    const localNotes = await this.indexedDBHandler.getNotes()
-    const remoteNotes = await this.firebaseHandler.getNotes()
+    const localNotes = await this.indexedDBHandler.getNotes();
+    const remoteNotes = await this.firebaseHandler.getNotes();
+    const localNotesMap = new Map(localNotes.map((note) => [note.id, note]));
 
-    // Sync local notes to Firebase
-    for (const note of localNotes) {
-      if (!remoteNotes.find((remote) => remote.id === note.id)) {
-        await this.firebaseHandler.createNote(note)
+    for (const remoteNote of remoteNotes) {
+      const localNote = localNotesMap.get(remoteNote.id);
+
+      if (!localNote) {
+        await this.indexedDBHandler.createNote(remoteNote);
+      } else if (JSON.stringify(localNote) !== JSON.stringify(remoteNote)) {
+        await this.indexedDBHandler.updateNote(remoteNote);
       }
+
+      localNotesMap.delete(remoteNote.id);
     }
 
-    // Sync Firebase notes to IndexedDB
-    for (const note of remoteNotes) {
-      if (!localNotes.find((local) => local.id === note.id)) {
-        await this.indexedDBHandler.createNote(note)
-      }
+    for (const localNote of localNotesMap.values()) {
+      await this.firebaseHandler.createNote(localNote);
     }
 
-    // Sync Lists
-    const localLists = await this.indexedDBHandler.getLists()
-    const remoteLists = await this.firebaseHandler.getLists()
+    const localLists = await this.indexedDBHandler.getLists();
+    const remoteLists = await this.firebaseHandler.getLists();
+    const localListsMap = new Map(localLists.map((list) => [list.id, list]));
 
-    const localMap = new Map(localLists.map((list) => [list.id, list]))
-
-    // Sync remote lists to local
     for (const remoteList of remoteLists) {
-      const localList = localMap.get(remoteList.id)
+      const localList = localListsMap.get(remoteList.id);
+
       if (!localList) {
-        await this.indexedDBHandler.createList(remoteList)
+        await this.indexedDBHandler.createList(remoteList);
       } else if (JSON.stringify(localList) !== JSON.stringify(remoteList)) {
-        await this.indexedDBHandler.updateList(remoteList)
+        await this.indexedDBHandler.updateList(remoteList);
       }
 
-      localMap.delete(remoteList.id)
+      localListsMap.delete(remoteList.id);
     }
 
-    // Sync local lists to remote
-    for (const localList of localMap.values()) {
-      await this.firebaseHandler.createList(localList)
+    for (const localList of localListsMap.values()) {
+      await this.firebaseHandler.createList(localList);
     }
   }
 

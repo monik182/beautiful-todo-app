@@ -10,7 +10,10 @@ export function Header() {
   const { sync, loading } = useStorage()
 
   const handleSync = async () => {
-    await sync?.()
+    if (window.location.pathname === '/') {
+      await sync?.()
+    }
+    window.location.reload()
     notifySuccess('Synced Successfully')
   }
 

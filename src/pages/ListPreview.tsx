@@ -26,7 +26,7 @@ export function ListPreview() {
     if (!list || !sessionId || list.sessionId === sessionId) return
     const allowedUsers = list?.allowedUsers || []
     try {
-      const updatedList = { ...list, date: new Date().toISOString(), allowedUsers: [...allowedUsers, (user?.uid || sessionId)] }
+      const updatedList = { ...list, allowedUsers: [...allowedUsers, (user?.uid || sessionId)] }
       updateList(updatedList)
       setList(updatedList)
       notifySuccess('List added to your lists')
