@@ -6,9 +6,10 @@ import { useEffect, useState } from 'react'
 import { useQueryParams } from '../hooks/useQueryParams'
 import { List, Note } from '../components'
 import { generateResourceId, sortByORder } from '../utils'
-import { useSessionContext, useStorage } from '../providers'
+import { useAuth, useSessionContext, useStorage } from '../providers'
 
 export function Home() {
+  const { user } = useAuth()
   const navigate = useNavigate()
   const params = useQueryParams()
   const { sessionId } = useSessionContext()
@@ -19,7 +20,7 @@ export function Home() {
   const [filteredNotes, setFilteredNotes] = useState(notes)
 
   const isOwner = (resourceSessionId: string) => {
-    return sessionId === resourceSessionId
+    return user?.uid === resourceSessionId || sessionId === resourceSessionId
   }
 
   const addNewList = () => {
@@ -61,10 +62,12 @@ export function Home() {
   }, [currentTab, navigate])
 
   useEffect(() => {
+    console.log('lists', lists.map((list) => list.uid))
     setFilteredLists(lists.sort(sortByORder))
   }, [lists])
 
   useEffect(() => {
+    // console.log('notes', notes.map((note) => note.uid))
     setFilteredNotes(notes.sort(sortByORder))
   }, [notes])
 
@@ -89,7 +92,7 @@ export function Home() {
         />
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {filteredLists.map((props) => <List key={props.id} {...props} onChange={updateList} onRemove={isOwner(props.sessionId) ? deleteList : undefined} />)}
+            {filteredLists.map((props) => <List key={props.id} {...props} onChange={updateList} onRemove={isOwner(props.uid || props.sessionId) ? deleteList : undefined} />)}
             <Button colorPalette="yellow" variant="outline" onClick={addNewList}>
               <SlPlus /> New List
             </Button>
@@ -105,7 +108,7 @@ export function Home() {
         />
         <Flex gap="2rem" direction="column">
           <SimpleGrid columns={[2, null, 3]} gap="20px" minChildWidth="sm">
-            {filteredNotes.map((props) => <Note key={props.id} {...props} onChange={updateNote} onRemove={isOwner(props.sessionId) ? deleteNote : undefined} />)}
+            {filteredNotes.map((props) => <Note key={props.id} {...props} onChange={updateNote} onRemove={isOwner(props.uid || props.sessionId) ? deleteNote : undefined} />)}
             <Button colorPalette="yellow" variant="outline" onClick={addNewNote}>
               <SlPlus /> New Note
             </Button>
